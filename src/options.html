@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Wallet Configuration</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #f9fafb;
+      color: #111827;
+      line-height: 1.5;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1C4587 0%, #2557A7 100%);
+      color: white;
+      padding: 32px 24px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 15px;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid #e5e7eb;
+      margin-bottom: 32px;
+    }
+
+    .tab {
+      padding: 12px 24px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-size: 15px;
+      font-weight: 500;
+      color: #6b7280;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: -2px;
+    }
+
+    .tab:hover {
+      color: #374151;
+    }
+
+    .tab.active {
+      color: #1C4587;
+      border-bottom-color: #1C4587;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background: #1C4587;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      background: #14366B;
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-secondary:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .wallet-card {
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .wallet-card:hover {
+      border-color: #1C4587;
+      box-shadow: 0 4px 6px rgba(102, 126, 234, 0.1);
+    }
+
+    .wallet-card.disabled {
+      opacity: 0.6;
+      background: #f9fafb;
+    }
+
+    .wallet-header {
+      display: flex;
+      align-items: start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .wallet-icon {
+      font-size: 48px;
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+
+    .wallet-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .wallet-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+
+    .wallet-url {
+      font-size: 13px;
+      color: #6b7280;
+      word-break: break-all;
+      margin-bottom: 8px;
+    }
+
+    .wallet-description {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+
+    .wallet-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-info {
+      background: #dbeafe;
+      color: #1e3a8a;
+    }
+
+    .wallet-actions {
+      display: flex;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+    }
+
+    .form-label.required::after {
+      content: '*';
+      color: #ef4444;
+      margin-left: 4px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      padding: 10px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: #1C4587;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-help {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header {
+      padding: 24px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: start;
+      gap: 12px;
+    }
+
+    .alert-info {
+      background: #dbeafe;
+      border: 1px solid #93c5fd;
+      color: #1e3a8a;
+    }
+
+    .alert-success {
+      background: #d1fae5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+    }
+
+    .alert-warning {
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      color: #92400e;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 64px 24px;
+      color: #6b7280;
+    }
+
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    .empty-state-text {
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .preset-card {
+      padding: 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .preset-card:hover {
+      border-color: #1C4587;
+      background: #f0f9ff;
+    }
+
+    .preset-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .preset-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #1C4587;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔐 Digital Wallet Configuration</h1>
+    <p>Manage your digital identity wallets and credential providers</p>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" data-tab="wallets">My Wallets</button>
+      <button class="tab" data-tab="add">Add Wallet</button>
+      <button class="tab" data-tab="settings">Settings</button>
+    </div>
+
+    <!-- My Wallets Tab -->
+    <div class="tab-content active" id="wallets-tab">
+      <div class="section">
+        <div class="section-header">
+          <h2 class="section-title">Configured Wallets</h2>
+          <button class="btn" id="add-wallet-btn">
+            <span>➕</span>
+            <span>Add Wallet</span>
+          </button>
+        </div>
+
+        <div id="wallets-container">
+          <!-- Wallets will be rendered here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Wallet Tab -->
+    <div class="tab-content" id="add-tab">
+      <div class="section">
+        <h2 class="section-title">Quick Add - wwWallet Providers</h2>
+        <div class="alert alert-info">
+          <span>ℹ️</span>
+          <div>
+            <strong>wwWallet Integration</strong><br>
+            Select a wwWallet provider below or add a custom wallet URL. wwWallet is an open-source digital identity wallet supporting W3C Verifiable Credentials.
+          </div>
+        </div>
+
+        <div class="preset-grid" id="preset-wallets">
+          <!-- Preset wallets will be rendered here -->
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">Add Custom Wallet</h2>
+        <form id="add-wallet-form" class="form-grid">
+          <div class="form-group">
+            <label class="form-label required" for="wallet-name">Wallet Name</label>
+            <input type="text" id="wallet-name" class="form-input" placeholder="e.g., My Personal Wallet" required>
+            <span class="form-help">A friendly name to identify this wallet</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="wallet-url">Wallet URL</label>
+            <input type="url" id="wallet-url" class="form-input" placeholder="https://wallet.example.com" required>
+            <span class="form-help">The base URL of your wallet provider</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="wallet-description">Description</label>
+            <textarea id="wallet-description" class="form-textarea" placeholder="Optional description..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="wallet-icon">Icon (Emoji)</label>
+            <input type="text" id="wallet-icon" class="form-input" placeholder="🔐" maxlength="2">
+            <span class="form-help">Choose an emoji to represent this wallet</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="wallet-color">Color</label>
+            <input type="color" id="wallet-color" class="form-input" value="#1C4587">
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="wallet-enabled" checked>
+              <label for="wallet-enabled">Enable this wallet immediately</label>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px;">
+            <button type="submit" class="btn">Add Wallet</button>
+            <button type="reset" class="btn btn-secondary">Clear Form</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div class="tab-content" id="settings-tab">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="total-wallets">0</div>
+          <div class="stat-label">Total Wallets</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="active-wallets">0</div>
+          <div class="stat-label">Active Wallets</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="total-requests">0</div>
+          <div class="stat-label">Total Requests</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">Extension Settings</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="extension-enabled">
+              <label for="extension-enabled">Enable wallet interception</label>
+            </div>
+            <span class="form-help">When disabled, all requests will use the browser's native implementation</span>
+          </div>
+
+          <div class="form-group">
+            <button class="btn btn-secondary" id="clear-stats">Clear Statistics</button>
+            <span class="form-help">Reset all usage statistics</span>
+          </div>
+
+          <div class="form-group">
+            <button class="btn btn-secondary" id="export-config">Export Configuration</button>
+            <span class="form-help">Download your wallet configuration as JSON</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="import-config">Import Configuration</label>
+            <input type="file" id="import-config" accept=".json">
+            <span class="form-help">Import wallet configuration from a JSON file</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Wallet Modal -->
+  <div class="modal" id="edit-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Wallet</h3>
+      </div>
+      <div class="modal-body">
+        <form id="edit-wallet-form" class="form-grid">
+          <input type="hidden" id="edit-wallet-id">
+          
+          <div class="form-group">
+            <label class="form-label required" for="edit-wallet-name">Wallet Name</label>
+            <input type="text" id="edit-wallet-name" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="edit-wallet-url">Wallet URL</label>
+            <input type="url" id="edit-wallet-url" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-wallet-description">Description</label>
+            <textarea id="edit-wallet-description" class="form-textarea"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-wallet-icon">Icon (Emoji)</label>
+            <input type="text" id="edit-wallet-icon" class="form-input" maxlength="2">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-wallet-color">Color</label>
+            <input type="color" id="edit-wallet-color" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="edit-wallet-enabled">
+              <label for="edit-wallet-enabled">Enabled</label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancel-edit">Cancel</button>
+        <button class="btn" id="save-edit">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

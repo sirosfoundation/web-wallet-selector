@@ -1,0 +1,56 @@
+{
+  "name": "dc-api-interceptor",
+  "version": "1.0.0",
+  "description": "Cross-browser extension to intercept DC API calls and provide additional functionality",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run icons && npm run build:chrome && npm run build:firefox && npm run build:safari",
+    "build:chrome": "node scripts/build.js chrome",
+    "build:firefox": "node scripts/build.js firefox",
+    "build:safari": "node scripts/build.js safari",
+    "icons": "node scripts/generate-icons.js",
+    "watch:chrome": "node scripts/watch.js chrome",
+    "watch:firefox": "node scripts/watch.js firefox",
+    "watch:safari": "node scripts/watch.js safari",
+    "package:chrome": "cd chrome && zip -r ../dist/chrome-extension.zip . -x '*.git*' -x 'README.md'",
+    "package:firefox": "cd firefox && zip -r ../dist/firefox-extension.xpi . -x '*.git*' -x 'README.md'",
+    "clean": "rm -rf chrome/*.js chrome/*.html safari/*.js safari/*.html firefox/*.js firefox/*.html",
+    "dev:firefox": "cd firefox && web-ext run",
+    "lint": "eslint src/**/*.js",
+    "test": "jest",
+    "test:unit": "jest tests/*.test.js --testPathIgnorePatterns=integration",
+    "test:integration": "jest --config jest.integration.config.js",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:all": "npm run test:unit && npm run build:chrome && npm run test:integration"
+  },
+  "keywords": [
+    "browser-extension",
+    "chrome-extension",
+    "firefox-addon",
+    "safari-extension",
+    "api-interceptor",
+    "webextension"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@types/chrome": "^0.1.30",
+    "@types/jest": "^30.0.0",
+    "babel-jest": "^30.2.0",
+    "eslint": "^8.56.0",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "jsdom": "^27.2.0",
+    "puppeteer": "^24.30.0",
+    "web-ext": "^7.11.0",
+    "ws": "^8.18.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}
