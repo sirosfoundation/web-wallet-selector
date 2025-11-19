@@ -7,11 +7,14 @@ A cross-browser extension that intercepts W3C Digital Credentials API calls (`na
 This extension solves a key problem in the digital identity ecosystem: **wallet selection**. When a website requests credentials using the W3C Digital Credentials API, this extension:
 
 1. **Intercepts the API call** - Captures calls to `navigator.credentials.get` for digital identity requests
-2. **Presents a modal dialog** - Shows users a list of their configured wallet providers
-3. **Allows wallet selection** - Users choose which wallet to use for the credential request
-4. **Provides fallback** - Users can opt to use the browser's native digital credentials implementation
-5. **Works across browsers** - Compatible with Chrome, Firefox, and Safari
-6. **Manages multiple wallets** - Comprehensive wallet management with wwWallet integration
+2. **Protocol-aware routing** - Filters wallets by supported protocols (OpenID4VP, mDoc, W3C VC)
+3. **Presents a modal dialog** - Shows users a list of compatible wallet providers
+4. **Allows wallet selection** - Users choose which wallet to use for the credential request
+5. **OpenID4VP support** - Full implementation with JAR, Presentation Exchange, and DCQL
+6. **JWT verification callbacks** - Wallets can provide their own signature verification
+7. **Provides fallback** - Users can opt to use the browser's native digital credentials implementation
+8. **Works across browsers** - Compatible with Chrome, Firefox, and Safari
+9. **Manages multiple wallets** - Comprehensive wallet management with wwWallet integration
 
 ## 🔐 Use Case
 
@@ -21,6 +24,59 @@ The W3C Digital Credentials API allows websites to request verifiable credential
 - Giving users choice and control over which wallet handles each request
 - Supporting wallet providers that might not be natively integrated with the browser
 - Providing a consistent user experience across different browsers
+- Implementing protocol-aware wallet filtering (OpenID4VP, mDoc, W3C VC)
+
+## 🎯 Quick Reference for Developers
+
+### For Verifiers (Websites Requesting Credentials)
+
+Use the standard W3C Digital Credentials API with OpenID4VP protocol:
+
+```javascript
+const credential = await navigator.credentials.get({
+  digital: {
+    providers: [{
+      protocol: "openid4vp",
+      request: {
+        client_id: "https://verifier.example.com",
+        response_type: "vp_token",
+        presentation_definition: { /* Presentation Exchange v2 */ }
+      }
+    }]
+  }
+});
+```
+
+### For Wallets (Self-Registration)
+
+Register your wallet and JWT verifier:
+
+```javascript
+// Check extension is installed
+if (window.DCWS?.isInstalled()) {
+  // Register wallet
+  await window.DCWS.registerWallet({
+    name: 'MyWallet',
+    url: 'https://wallet.example.com',
+    protocols: ['openid4vp'],
+    icon: '🔐',
+    color: '#3b82f6'
+  });
+  
+  // Register JWT verifier
+  window.DCWS.registerJWTVerifier(
+    'https://wallet.example.com',
+    async (jwt, options) => {
+      // Your crypto library verification
+      return { valid: true, payload: decoded };
+    }
+  );
+}
+```
+
+**📖 See [API Overview](#-quick-start-api-overview) for complete documentation.**
+
+
 
 ## ✨ Key Features
 
@@ -48,6 +104,384 @@ The W3C Digital Credentials API allows websites to request verifiable credential
 - **Build Automation**: Makefile and npm scripts for all workflows
 - **Watch Mode**: Auto-rebuild during development
 - **Cross-browser**: Single codebase for all platforms
+
+## 📋 Implementation Status
+
+### ✅ Completed Features
+
+**Core Infrastructure:**
+- ✅ W3C Digital Credentials API interception (`navigator.credentials.get`)
+- ✅ Cross-browser support (Chrome, Firefox, Safari)
+- ✅ Protocol plugin architecture for extensible protocol support
+- ✅ Wallet selection modal UI with filtering
+- ✅ Protocol-aware wallet filtering
+
+**OpenID4VP Protocol (Full Implementation):**
+- ✅ **Request Parsing**: URL parameters, JAR (JWT-secured Authorization Request), Presentation Exchange, DCQL
+- ✅ **Client ID Schemes**: `x509_san_dns`, `https` URLs with validation
+- ✅ **Response Modes**: `direct_post`, `direct_post.jwt` (encrypted)
+- ✅ **JAR Support**: `request_uri` fetching and JWT verification
+- ✅ **Presentation Exchange**: v2.0 with descriptor maps and input descriptors
+- ✅ **DCQL**: Query language support for credential requests
+- ✅ **Response Validation**: `vp_token` and `presentation_submission` structure validation
+- ✅ **JWT Verification Callbacks**: Wallets can provide signature verification functions
+
+**Wallet Management:**
+- ✅ Auto-registration API for wallets (`window.DCWS.registerWallet()`)
+- ✅ JWT verification callback registration (`window.DCWS.registerJWTVerifier()`)
+- ✅ Protocol support declaration per wallet
+- ✅ Wallet enable/disable without deletion
+- ✅ Pre-configured wwWallet instances (Demo, EU, Test)
+- ✅ Import/Export wallet configurations
+- ✅ Usage statistics tracking
+
+**Testing & Documentation:**
+- ✅ 146 passing unit tests (Jest)
+- ✅ OpenID4VP: 36 comprehensive tests
+- ✅ JWT verification: 21 callback tests
+- ✅ Integration tests with Puppeteer
+- ✅ Complete API documentation
+- ✅ Implementation guides and examples
+
+### 🚧 Future Enhancements
+
+**Additional Protocols:**
+- ⏭️ mDoc OpenID4VP protocol plugin
+- ⏭️ W3C Verifiable Credentials protocol plugin
+- ⏭️ ISO/IEC 18013-5 mDoc protocol
+- ⏭️ Custom protocol plugin templates
+
+**Advanced Features:**
+- ⏭️ Response encryption/decryption callbacks
+- ⏭️ Credential caching and management
+- ⏭️ Multi-credential presentation flows
+- ⏭️ Protocol negotiation and fallbacks
+
+## 🚀 Quick Start: API Overview
+
+### Digital Credentials API (Website/Verifier Side)
+
+The extension intercepts standard W3C Digital Credentials API calls. Websites request credentials using the native browser API:
+
+```javascript
+// Basic credential request
+const credential = await navigator.credentials.get({
+  digital: {
+    providers: [{
+      protocol: "openid4vp",
+      request: {
+        // OpenID4VP authorization request
+        client_id: "https://verifier.example.com",
+        client_id_scheme: "https",
+        response_type: "vp_token",
+        response_mode: "direct_post",
+        response_uri: "https://verifier.example.com/callback",
+        nonce: "n-0S6_WzA2Mj",
+        presentation_definition: {
+          id: "example-request",
+          input_descriptors: [{
+            id: "id_credential",
+            format: { jwt_vp: { alg: ["ES256"] } },
+            constraints: {
+              fields: [{
+                path: ["$.vc.type"],
+                filter: { type: "string", const: "IdentityCredential" }
+              }]
+            }
+          }]
+        }
+      }
+    }]
+  }
+});
+```
+
+**Supported Protocol Features:**
+
+#### OpenID4VP Protocol
+
+**Request Formats:**
+```javascript
+// 1. Direct parameters (inline)
+const credential = await navigator.credentials.get({
+  digital: {
+    providers: [{
+      protocol: "openid4vp",
+      request: {
+        client_id: "https://verifier.example.com",
+        response_type: "vp_token",
+        presentation_definition: { /* ... */ }
+      }
+    }]
+  }
+});
+
+// 2. JAR - JWT-secured Authorization Request (by reference)
+const credential = await navigator.credentials.get({
+  digital: {
+    providers: [{
+      protocol: "openid4vp",
+      request: {
+        client_id: "https://verifier.example.com",
+        request_uri: "https://verifier.example.com/request/abc123"
+      }
+    }]
+  }
+});
+
+// 3. DCQL - Digital Credentials Query Language
+const credential = await navigator.credentials.get({
+  digital: {
+    providers: [{
+      protocol: "openid4vp",
+      request: {
+        client_id: "https://verifier.example.com",
+        dcql_query: {
+          credentials: [{
+            id: "org.example.driver_license",
+            claims: [
+              { path: ["document_number"] },
+              { path: ["driving_privileges"] }
+            ]
+          }]
+        }
+      }
+    }]
+  }
+});
+```
+
+**Client ID Schemes:**
+- `x509_san_dns` - X.509 certificate with DNS SAN (preferred for production)
+- `https` - HTTPS URL (must match request origin)
+- `redirect_uri` - OAuth 2.0 redirect URI (legacy support)
+
+**Response Modes:**
+- `direct_post` - HTTP POST to response_uri
+- `direct_post.jwt` - Encrypted JWT POST to response_uri
+- `fragment` - URL fragment (limited support)
+
+### Wallet Registration API
+
+Wallets can auto-register themselves with the extension using the `window.DCWS` (Digital Credentials Wallet Selector) API.
+
+#### Basic Registration
+
+```javascript
+// Check if extension is installed
+if (window.DCWS?.isInstalled()) {
+  // Register your wallet
+  const result = await window.DCWS.registerWallet({
+    name: 'MyWallet',
+    url: 'https://wallet.example.com',
+    protocols: ['openid4vp', 'w3c-vc'],  // Required: supported protocols
+    description: 'My digital identity wallet',
+    icon: '🔐',  // Emoji or URL to icon
+    color: '#3b82f6'  // Brand color
+  });
+  
+  if (result.success) {
+    console.log('Wallet registered successfully');
+  }
+}
+```
+
+#### JWT Verification Callbacks
+
+Wallets can provide their own JWT signature verification to avoid bundling crypto libraries in the extension:
+
+```javascript
+// Register a JWT verification callback
+window.DCWS.registerJWTVerifier(
+  'https://wallet.example.com',
+  async (jwt, options) => {
+    try {
+      // Use your wallet's crypto library to verify the JWT
+      const result = await myWalletCrypto.verifyJWT(jwt, options);
+      
+      return {
+        valid: true,
+        payload: result.payload,
+        header: result.header
+      };
+    } catch (error) {
+      return {
+        valid: false,
+        error: error.message
+      };
+    }
+  }
+);
+```
+
+**JWT Verification Options:**
+
+The `options` parameter passed to your verifier includes:
+
+```typescript
+{
+  publicKey?: string;      // PEM-formatted public key
+  certificate?: string;    // PEM-formatted X.509 certificate
+  algorithm?: string;      // Expected algorithm (e.g., 'ES256', 'RS256')
+  issuer?: string;        // Expected issuer
+  audience?: string;      // Expected audience
+}
+```
+
+**Using JWT Verifier with OpenID4VP:**
+
+When the extension fetches a JAR (JWT Authorization Request), it will automatically use the registered verifier:
+
+```javascript
+// Extension code internally does:
+const plugin = new OpenID4VPPlugin();
+const request = await plugin.handleRequestUri(
+  'https://verifier.example.com/request/abc123',
+  {
+    jwtVerifier: walletProvidedVerifier  // Uses your callback
+  }
+);
+```
+
+### Complete Wallet API Reference
+
+```javascript
+window.DCWS = {
+  /**
+   * Check if extension is installed
+   * @returns {boolean}
+   */
+  isInstalled: function() { /* ... */ },
+  
+  /**
+   * Register a wallet with the extension
+   * @param {Object} walletInfo
+   * @param {string} walletInfo.name - Display name
+   * @param {string} walletInfo.url - Wallet endpoint URL
+   * @param {string[]} walletInfo.protocols - Supported protocols (e.g., ['openid4vp'])
+   * @param {string} [walletInfo.description] - Optional description
+   * @param {string} [walletInfo.icon] - Optional icon (emoji or URL)
+   * @param {string} [walletInfo.color] - Optional brand color (hex)
+   * @returns {Promise<{success: boolean, alreadyRegistered: boolean, wallet: Object}>}
+   */
+  registerWallet: async function(walletInfo) { /* ... */ },
+  
+  /**
+   * Check if a wallet is already registered
+   * @param {string} url - Wallet URL to check
+   * @returns {Promise<boolean>}
+   */
+  isWalletRegistered: async function(url) { /* ... */ },
+  
+  /**
+   * Register a JWT verification callback
+   * @param {string} walletUrl - Wallet URL
+   * @param {Function} verifyCallback - async (jwt, options) => {valid, payload?, error?}
+   * @returns {boolean} Success
+   */
+  registerJWTVerifier: function(walletUrl, verifyCallback) { /* ... */ },
+  
+  /**
+   * Unregister a JWT verification callback
+   * @param {string} walletUrl - Wallet URL
+   * @returns {boolean} True if removed
+   */
+  unregisterJWTVerifier: function(walletUrl) { /* ... */ },
+  
+  /**
+   * Get list of wallets with registered JWT verifiers
+   * @returns {string[]} Array of wallet URLs
+   */
+  getRegisteredJWTVerifiers: function() { /* ... */ }
+};
+```
+
+### Wallet Integration Example
+
+Complete example of wallet integrating with the extension:
+
+```javascript
+// wallet-integration.js
+(async function() {
+  // Wait for extension to be ready
+  if (!window.DCWS?.isInstalled()) {
+    console.log('Extension not installed');
+    return;
+  }
+  
+  // Check if already registered
+  const walletUrl = 'https://wallet.example.com';
+  const isRegistered = await window.DCWS.isWalletRegistered(walletUrl);
+  
+  if (!isRegistered) {
+    // Register the wallet
+    await window.DCWS.registerWallet({
+      name: 'Example Wallet',
+      url: walletUrl,
+      protocols: ['openid4vp', 'w3c-vc'],
+      description: 'Secure digital identity wallet with biometric support',
+      icon: 'https://wallet.example.com/icon.png',
+      color: '#1a73e8'
+    });
+  }
+  
+  // Register JWT verifier using wallet's crypto library
+  window.DCWS.registerJWTVerifier(walletUrl, async (jwt, options) => {
+    // Import your wallet's crypto functions
+    const { verifyJWT } = await import('./crypto.js');
+    
+    try {
+      const result = await verifyJWT(jwt, {
+        publicKey: options.publicKey,
+        certificate: options.certificate,
+        algorithm: options.algorithm || 'ES256'
+      });
+      
+      return {
+        valid: true,
+        payload: result.payload,
+        header: result.header
+      };
+    } catch (error) {
+      return {
+        valid: false,
+        error: error.message
+      };
+    }
+  });
+  
+  console.log('Wallet integration complete');
+})();
+```
+
+### OpenID4VP Implementation Details
+
+The extension provides comprehensive OpenID4VP support based on the wwWallet reference implementation:
+
+**Features:**
+- ✅ **Multiple Request Formats**: Direct parameters, JAR (request_uri), Presentation Exchange, DCQL
+- ✅ **Client Authentication**: X.509 certificates (x509_san_dns), HTTPS URLs
+- ✅ **JAR Validation**: Automatic JWT fetching and verification (with wallet callbacks)
+- ✅ **Presentation Exchange v2.0**: Full support for input descriptors and descriptor maps
+- ✅ **Response Validation**: Validates vp_token format and presentation_submission structure
+- ✅ **Security**: Client ID validation, nonce support, state parameter handling
+
+**Request Flow:**
+1. Website calls `navigator.credentials.get()` with `protocol: "openid4vp"`
+2. Extension detects OpenID4VP protocol
+3. Extension filters wallets supporting `openid4vp`
+4. User selects wallet from filtered list
+5. Extension prepares and validates the authorization request
+6. If using JAR (`request_uri`), fetches and verifies JWT
+7. Extension formats request as authorization URL
+8. Wallet processes request and returns credential
+
+**For detailed OpenID4VP documentation, see:**
+- [OpenID4VP Implementation Guide](docs/design/OPENID4VP_IMPLEMENTATION.md)
+- [OpenID4VP Summary](docs/design/OPENID4VP_SUMMARY.md)
+- [JWT Verification Callbacks](docs/design/JWT_VERIFICATION_CALLBACKS.md)
+
+
 
 ## 📁 Project Structure
 
@@ -335,7 +769,11 @@ start test-wallet-api.html  # Windows
 
 ### Testing the Extension
 
-Open `test-page.html` in your browser with the extension installed:
+#### Interactive Test Pages
+
+**1. Digital Credentials API Test (`test-page.html`)**
+
+Test basic DC API interception and wallet selection:
 
 ```bash
 # Open the test page
@@ -344,30 +782,119 @@ xdg-open test-page.html  # Linux
 start test-page.html  # Windows
 ```
 
-The test page demonstrates:
+Features demonstrated:
 - Basic digital identity credential requests
 - Requests with specific claims
+- Protocol-specific requests (OpenID4VP)
 - Difference between digital identity and regular credential requests
 
-## � Documentation
+**2. Wallet Auto-Registration Test (`test-wallet-api.html`)**
+
+Test the wallet registration API:
+
+```bash
+open test-wallet-api.html  # macOS
+xdg-open test-wallet-api.html  # Linux
+start test-wallet-api.html  # Windows
+```
+
+Features demonstrated:
+- Extension detection (`DCWS.isInstalled()`)
+- Wallet registration with protocols
+- JWT verifier registration
+- API error handling
+
+#### Unit Tests
+
+Run the complete test suite:
+
+```bash
+# Run all tests
+npm test
+
+# Run specific test suites
+npm test -- tests/openid4vp.test.js       # 36 OpenID4VP tests
+npm test -- tests/jwt-verification.test.js # 21 JWT callback tests
+
+# Run with coverage
+npm run test:coverage
+```
+
+**Test Coverage:**
+- ✅ 146/146 tests passing (100% success rate)
+- ✅ OpenID4VP: Request parsing, JAR handling, response validation
+- ✅ JWT Verification: Registration, callback execution, integration
+- ✅ Protocol plugins: Registration, filtering, request processing
+- ✅ Wallet management: Registration, protocol matching, auto-registration
+
+## 📚 Documentation
 
 Comprehensive documentation is available in the [`docs/`](docs/) directory:
 
+### API Documentation
+
+- **[Wallet API Guide](WALLET_API.md)** - Complete wallet auto-registration API reference
+- **[Wallet Management Guide](WALLET_MANAGEMENT.md)** - User guide for managing wallets in the extension
+
+### OpenID4VP Protocol
+
+- **[OpenID4VP Implementation](docs/design/OPENID4VP_IMPLEMENTATION.md)** - Complete technical documentation
+  - Architecture and request/response flows
+  - Parameter reference and validation rules
+  - JAR (JWT Authorization Request) handling
+  - Presentation Exchange v2.0 support
+  - DCQL (Digital Credentials Query Language)
+  - Security considerations and best practices
+  - Testing guide with examples
+  
+- **[OpenID4VP Summary](docs/design/OPENID4VP_SUMMARY.md)** - Executive summary
+  - Problem statement and solution overview
+  - Key features and capabilities
+  - Usage examples
+  - Test coverage (36 tests)
+
+### JWT Verification System
+
+- **[JWT Verification Callbacks](docs/design/JWT_VERIFICATION_CALLBACKS.md)** - Complete callback API documentation
+  - Architecture and security model
+  - API reference with callback signatures
+  - Wallet implementation examples
+  - Certificate validation patterns
+  - Performance optimization tips
+  - Troubleshooting guide
+  
+- **[JWT Verification Summary](docs/design/JWT_VERIFICATION_SUMMARY.md)** - Executive summary
+  - Problem and solution overview
+  - API quick reference
+  - Integration examples
+  - Benefits and security considerations
+
 ### Design Documents
-- **[Protocol Support](docs/design/PROTOCOL_SUPPORT.md)** - Protocol-aware business logic, plugin architecture, and W3C Digital Credentials API implementation
-  - Protocol filtering and request handling
-  - Plugin system for custom protocols (OpenID4VP, mDoc, W3C VC)
-  - `userAgentAllowsProtocol()` override implementation
-  - Wallet registration with protocol support
+
+- **[Protocol Support Architecture](docs/design/PROTOCOL_SUPPORT.md)** - Protocol plugin system
+  - Plugin architecture and interfaces
+  - Protocol filtering and wallet matching
+  - W3C Digital Credentials API implementation
+  - Custom protocol development guide
+
+- **[Auto-Registration Summary](docs/design/AUTO_REGISTRATION_SUMMARY.md)** - Wallet auto-registration system
+  - API design and security
+  - Integration patterns
+  - Best practices
 
 ### Brand Guidelines
+
 - **[Branding Guide](docs/BRANDING.md)** - Logo usage, color palette, typography, and UI components
 - **[Branding Updates](docs/BRANDING_UPDATE.md)** - Recent branding changes and asset generation
 
-### Additional Resources
-- Test coverage: 105/105 tests passing
-- Built-in protocol support: OpenID4VP, mDoc OpenID4VP, W3C Verifiable Credentials
-- Extensible plugin architecture for custom protocols
+### Testing
+
+- **Test Coverage**: 146/146 tests passing (100% success rate)
+  - Protocol tests: 36 OpenID4VP tests
+  - JWT verification: 21 callback tests
+  - Integration tests: 89 core tests
+- **Test Files**: All tests in `tests/` directory with Jest framework
+- **Test Pages**: `test-page.html` (DC API), `test-wallet-api.html` (wallet registration)
 
 ## �📝 Configuration
 
