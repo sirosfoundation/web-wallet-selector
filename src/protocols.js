@@ -51,25 +51,23 @@ class ProtocolPlugin {
 }
 
 /**
- * OpenID4VP Protocol Plugin
- * Implements OpenID for Verifiable Presentations
+ * Example Protocol Plugin Implementation
+ * This is a stub showing how to implement a protocol plugin
+ * Real protocol implementations should be added as separate plugins
  */
-class OpenID4VPPlugin extends ProtocolPlugin {
+class ExampleProtocolPlugin extends ProtocolPlugin {
   getProtocolId() {
-    return 'openid4vp';
+    return 'example-protocol';
   }
   
   prepareRequest(requestData) {
-    // Validate OpenID4VP request structure
+    // Validate request structure
     if (!requestData || typeof requestData !== 'object') {
-      throw new Error('OpenID4VP request data must be an object');
+      throw new Error('Request data must be an object');
     }
     
-    // OpenID4VP typically includes presentation_definition
-    if (!requestData.presentation_definition && !requestData.request_uri) {
-      throw new Error('OpenID4VP request must include presentation_definition or request_uri');
-    }
-    
+    // Add any protocol-specific validation here
+    // Transform and return the prepared request
     return {
       ...requestData,
       timestamp: new Date().toISOString()
@@ -77,91 +75,12 @@ class OpenID4VPPlugin extends ProtocolPlugin {
   }
   
   validateResponse(responseData) {
+    // Validate response structure
     if (!responseData || typeof responseData !== 'object') {
-      throw new Error('Invalid OpenID4VP response');
+      throw new Error('Invalid response data');
     }
     
-    // OpenID4VP responses typically include vp_token
-    if (!responseData.vp_token && !responseData.id_token) {
-      throw new Error('OpenID4VP response must include vp_token or id_token');
-    }
-    
-    return responseData;
-  }
-}
-
-/**
- * mDL (Mobile Driver's License) over OpenID4VP Plugin
- */
-class MDocOpenID4VPPlugin extends ProtocolPlugin {
-  getProtocolId() {
-    return 'mdoc-openid4vp';
-  }
-  
-  prepareRequest(requestData) {
-    if (!requestData || typeof requestData !== 'object') {
-      throw new Error('mDoc OpenID4VP request data must be an object');
-    }
-    
-    // mDoc requests should specify the document type
-    if (!requestData.doctype && !requestData.presentation_definition) {
-      throw new Error('mDoc request must include doctype or presentation_definition');
-    }
-    
-    return {
-      ...requestData,
-      format: 'mdoc',
-      timestamp: new Date().toISOString()
-    };
-  }
-  
-  validateResponse(responseData) {
-    if (!responseData || typeof responseData !== 'object') {
-      throw new Error('Invalid mDoc response');
-    }
-    
-    if (!responseData.vp_token) {
-      throw new Error('mDoc response must include vp_token');
-    }
-    
-    return responseData;
-  }
-}
-
-/**
- * W3C Verifiable Credentials API Plugin
- */
-class W3CVCPlugin extends ProtocolPlugin {
-  getProtocolId() {
-    return 'w3c-vc';
-  }
-  
-  prepareRequest(requestData) {
-    if (!requestData || typeof requestData !== 'object') {
-      throw new Error('W3C VC request data must be an object');
-    }
-    
-    // W3C VC requests typically include credential type requirements
-    if (!requestData.type && !requestData.credentialSubject) {
-      throw new Error('W3C VC request must include type or credentialSubject');
-    }
-    
-    return {
-      ...requestData,
-      timestamp: new Date().toISOString()
-    };
-  }
-  
-  validateResponse(responseData) {
-    if (!responseData || typeof responseData !== 'object') {
-      throw new Error('Invalid W3C VC response');
-    }
-    
-    // W3C VCs must have specific fields
-    if (!responseData['@context'] || !responseData.type) {
-      throw new Error('W3C VC response must include @context and type');
-    }
-    
+    // Add any protocol-specific validation here
     return responseData;
   }
 }
@@ -174,10 +93,8 @@ class ProtocolPluginRegistry {
   constructor() {
     this.plugins = new Map();
     
-    // Register built-in plugins
-    this.register(new OpenID4VPPlugin());
-    this.register(new MDocOpenID4VPPlugin());
-    this.register(new W3CVCPlugin());
+    // Register example plugin (replace with real implementations)
+    this.register(new ExampleProtocolPlugin());
   }
   
   /**
@@ -276,9 +193,7 @@ if (typeof module !== 'undefined' && module.exports) {
   // Node.js environment (for testing)
   module.exports = {
     ProtocolPlugin,
-    OpenID4VPPlugin,
-    MDocOpenID4VPPlugin,
-    W3CVCPlugin,
+    ExampleProtocolPlugin,
     ProtocolPluginRegistry
   };
 }
