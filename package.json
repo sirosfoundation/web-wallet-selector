@@ -20,6 +20,7 @@
     "test": "jest",
     "test:unit": "jest tests/*.test.js --testPathIgnorePatterns=integration",
     "test:integration": "jest --config jest.integration.config.js",
+    "test:wallet": "jest tests/wallet-integration.test.js --runInBand",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:all": "npm run test:unit && npm run build:chrome && npm run test:integration"
