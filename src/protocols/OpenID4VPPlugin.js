@@ -325,9 +325,11 @@ class OpenID4VPPlugin extends ProtocolPlugin {
    * 4. Extract authorization parameters from JWT payload
    * 
    * @param {string} requestUri - URL to fetch JAR from
+   * @param {Object} options - Optional verification options
+   * @param {Function} options.jwtVerifier - Optional wallet-provided JWT verifier
    * @returns {Promise<Object>} Parsed and validated authorization parameters
    */
-  async handleRequestUri(requestUri) {
+  async handleRequestUri(requestUri, options = {}) {
     try {
       const response = await fetch(requestUri);
       if (!response.ok) {
@@ -348,17 +350,75 @@ class OpenID4VPPlugin extends ProtocolPlugin {
         throw new Error('Invalid JWT type: expected oauth-authz-req+jwt');
       }
 
-      // TODO: Verify JWT signature using x5c certificate
-      // This requires crypto libraries and certificate validation
-      console.warn('OpenID4VP: JWT signature verification not yet implemented');
+      // Verify JWT signature if a verifier is provided
+      if (options.jwtVerifier && typeof options.jwtVerifier === 'function') {
+        console.log('OpenID4VP: Verifying JWT signature using wallet-provided verifier');
+        
+        const verificationOptions = {
+          certificate: header.x5c?.[0], // First certificate in chain
+          algorithm: header.alg,
+          kid: header.kid
+        };
+
+        try {
+          const verificationResult = await options.jwtVerifier(jwt, verificationOptions);
+          
+          if (!verificationResult.valid) {
+            throw new Error(`JWT signature verification failed: ${verificationResult.error || 'Invalid signature'}`);
+          }
+          
+          console.log('OpenID4VP: JWT signature verified successfully');
+        } catch (err) {
+          throw new Error(`JWT verification error: ${err.message}`);
+        }
+      } else {
+        // No verifier provided - log warning
+        console.warn('OpenID4VP: JWT signature verification skipped - no verifier provided');
+        console.warn('To enable verification, register a JWT verifier via DCWS.registerJWTVerifier()');
+      }
 
       // Return parsed authorization parameters
       return {
         ...payload,
         _jarHeader: header, // Include header for certificate validation
+        _jarSignatureVerified: !!options.jwtVerifier, // Indicate if signature was verified
       };
     } catch (err) {
       throw new Error(`Error handling request_uri: ${err.message}`);
+    }
+  }
+
+  /**
+   * Verify a JWT using a wallet-provided verifier
+   * This is a helper method that can be called directly
+   * 
+   * @param {string} jwt - The JWT to verify
+   * @param {Function} verifier - The verification function
+   * @param {Object} options - Verification options (certificate, algorithm, etc.)
+   * @returns {Promise<Object>} Verification result
+   */
+  async verifyJWT(jwt, verifier, options = {}) {
+    if (typeof verifier !== 'function') {
+      throw new Error('Verifier must be a function');
+    }
+
+    try {
+      const result = await verifier(jwt, options);
+      
+      if (!result || typeof result !== 'object') {
+        throw new Error('Verifier must return an object with {valid, payload?, error?}');
+      }
+
+      if (!result.hasOwnProperty('valid')) {
+        throw new Error('Verifier result must include "valid" property');
+      }
+
+      return result;
+    } catch (err) {
+      return {
+        valid: false,
+        error: err.message
+      };
     }
   }
 }

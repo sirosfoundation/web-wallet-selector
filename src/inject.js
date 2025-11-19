@@ -25,8 +25,15 @@
   // Cache of supported protocols (updated when wallets register)
   let supportedProtocols = new Set();
   
-  // Initialize protocol plugin registry
-  const protocolRegistry = new window.ProtocolPluginRegistry();
+    // Initialize protocol plugin registry
+  const protocolRegistry = typeof window.ProtocolPluginRegistry !== 'undefined' 
+    ? new window.ProtocolPluginRegistry()
+    : null;
+
+  // Store wallet-provided callbacks
+  const walletCallbacks = {
+    jwtVerifiers: new Map(), // Maps wallet URL -> JWT verification function
+  };
   
   /**
    * Override DigitalCredential.userAgentAllowsProtocol
@@ -375,6 +382,54 @@
           reject(new Error('Check timeout'));
         }, 5000);
       });
+    },
+
+    /**
+     * Register a JWT verification callback for protocol operations
+     * Allows wallets to provide their own JWT verification logic
+     * @param {string} walletUrl - The URL of the wallet providing the verifier
+     * @param {Function} verifyCallback - Async function that verifies JWT
+     *   Signature: async (jwt, options) => { valid: boolean, payload?: any, error?: string }
+     *   - jwt: string - The JWT to verify
+     *   - options: { publicKey?: string, certificate?: string, algorithm?: string }
+     * @returns {boolean} Success status
+     */
+    registerJWTVerifier: function(walletUrl, verifyCallback) {
+      if (typeof verifyCallback !== 'function') {
+        throw new Error('JWT verifier must be a function');
+      }
+
+      try {
+        // Validate wallet URL
+        new URL(walletUrl);
+      } catch (e) {
+        throw new Error('Invalid wallet URL: ' + walletUrl);
+      }
+
+      walletCallbacks.jwtVerifiers.set(walletUrl, verifyCallback);
+      console.log(`JWT verifier registered for wallet: ${walletUrl}`);
+      return true;
+    },
+
+    /**
+     * Unregister a JWT verification callback
+     * @param {string} walletUrl - The URL of the wallet
+     * @returns {boolean} True if a verifier was removed
+     */
+    unregisterJWTVerifier: function(walletUrl) {
+      const removed = walletCallbacks.jwtVerifiers.delete(walletUrl);
+      if (removed) {
+        console.log(`JWT verifier unregistered for wallet: ${walletUrl}`);
+      }
+      return removed;
+    },
+
+    /**
+     * Get list of wallets that have registered JWT verifiers
+     * @returns {string[]} Array of wallet URLs
+     */
+    getRegisteredJWTVerifiers: function() {
+      return Array.from(walletCallbacks.jwtVerifiers.keys());
     }
   };
   
