@@ -2,7 +2,7 @@
 
 A cross-browser extension that intercepts W3C Digital Credentials API calls and enables users to choose between multiple digital identity wallet providers.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-BSD%202--Clause-blue.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-146%2F146-brightgreen.svg)](DEVELOPMENT.md#testing)
 [![OpenID4VP](https://img.shields.io/badge/OpenID4VP-Full%20Implementation-green.svg)](docs/design/OPENID4VP_IMPLEMENTATION.md)
 
@@ -245,7 +245,9 @@ Contributions welcome! Please:
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+BSD 2-Clause License - see [LICENSE](LICENSE) file for details.
+
+Copyright (c) 2025, SIROS Foundation
 
 ## 🔗 Resources
 
