@@ -76,6 +76,12 @@
           this.config = { ...DEFAULT_WALLET_CONFIG, ...customConfig };
         }
 
+        // Wait for extension to be injected (with timeout)
+        const startTime = Date.now();
+        while (!window.DCWS && (Date.now() - startTime < 3000)) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+
         // Check if extension is installed
         this.state.extensionInstalled = typeof window.DCWS?.isInstalled === 'function' 
           && window.DCWS.isInstalled();
@@ -102,6 +108,12 @@
           
           this.state.registered = true;
           this.state.walletInfo = result.wallet;
+          
+          // Update config URL if custom URL was provided
+          if (walletInfo.url) {
+            this.config.url = walletInfo.url;
+          }
+          
           this.addToHistory('register', { request: walletInfo, response: result });
           
           this.setStatus(
