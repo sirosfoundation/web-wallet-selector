@@ -12,13 +12,27 @@
   const protocolsScript = document.createElement('script');
   protocolsScript.src = chrome.runtime.getURL('protocols.js');
   protocolsScript.onload = function() {
-    // After protocols are loaded, inject the interception script
-    const script = document.createElement('script');
-    script.src = chrome.runtime.getURL('inject.js');
-    script.onload = function() {
+    // Load OpenID4VP plugin
+    const openid4vpScript = document.createElement('script');
+    openid4vpScript.src = chrome.runtime.getURL('protocols/OpenID4VPPlugin.js');
+    openid4vpScript.onload = function() {
+      // Load modal script
+      const modalScript = document.createElement('script');
+      modalScript.src = chrome.runtime.getURL('modal.js');
+      modalScript.onload = function() {
+        // After all dependencies are loaded, inject the interception script
+        const script = document.createElement('script');
+        script.src = chrome.runtime.getURL('inject.js');
+        script.onload = function() {
+          this.remove();
+        };
+        (document.head || document.documentElement).appendChild(script);
+        this.remove();
+      };
+      (document.head || document.documentElement).appendChild(modalScript);
       this.remove();
     };
-    (document.head || document.documentElement).appendChild(script);
+    (document.head || document.documentElement).appendChild(openid4vpScript);
     this.remove();
   };
   (document.head || document.documentElement).appendChild(protocolsScript);
@@ -53,76 +67,55 @@
         return;
       }
 
-      // Show wallet selection modal
-      if (typeof window.showWalletSelector === 'function') {
-        window.showWalletSelector(
-          response.wallets,
-          requests,
-          // On wallet selected
-          async (wallet, selectedRequest) => {
-            console.log('Wallet selected:', wallet.name, 'for protocol:', selectedRequest.protocol);
-            
-            // Notify background script
-            await runtime.sendMessage({
-              type: 'WALLET_SELECTED',
-              walletId: wallet.id,
-              requestId: requestId,
-              protocol: selectedRequest.protocol
-            });
-
-            // TODO: Communicate with the actual wallet endpoint
-            // For now, simulate a credential response
-            const credential = {
-              id: 'credential-' + Date.now(),
-              type: 'digital',
-              protocol: selectedRequest.protocol,
-              data: {
-                // Wallet would return actual credential data here
-                vp_token: 'simulated_vp_token',
-                presentation_submission: {
-                  id: 'submission-' + Date.now(),
-                  definition_id: 'definition-1'
-                }
-              },
-              wallet: wallet.name,
-            };
-
-            window.dispatchEvent(new CustomEvent('DC_CREDENTIALS_RESPONSE', {
-              detail: {
-                requestId: requestId,
-                response: credential.data,
-                protocol: credential.protocol
-              }
-            }));
-          },
-          // On native browser wallet chosen
-          () => {
-            console.log('Using native browser wallet');
-            window.dispatchEvent(new CustomEvent('DC_CREDENTIALS_RESPONSE', {
-              detail: {
-                requestId: requestId,
-                useNative: true
-              }
-            }));
-          },
-          // On cancel
-          () => {
-            console.log('Wallet selection cancelled');
-            window.dispatchEvent(new CustomEvent('DC_CREDENTIALS_RESPONSE', {
-              detail: {
-                requestId: requestId,
-                error: 'User cancelled the request'
-              }
-            }));
-          }
-        );
-      } else {
-        throw new Error('Wallet selector not loaded');
-      }
+      // Show wallet selection modal by dispatching event to the page context
+      // (modal.js runs in page context, content.js runs in content script context)
+      window.dispatchEvent(new CustomEvent('DC_SHOW_WALLET_SELECTOR', {
+        detail: {
+          requestId: requestId,
+          wallets: response.wallets,
+          requests: requests
+        }
+      }));
     } catch (error) {
       console.error('Error handling credential request:', error);
       
       // Dispatch error back to the page
+      window.dispatchEvent(new CustomEvent('DC_CREDENTIALS_RESPONSE', {
+        detail: {
+          requestId: requestId,
+          error: error.message
+        }
+      }));
+    }
+  });
+
+  // Listen for wallet selection from the page context (modal.js)
+  window.addEventListener('DC_WALLET_SELECTED', async function(event) {
+    console.log('Wallet selected from modal:', event.detail);
+    const { requestId, walletId, wallet, protocol, selectedRequest } = event.detail;
+    
+    try {
+      const runtime = typeof browser !== 'undefined' ? browser.runtime : chrome.runtime;
+      
+      // Notify background script
+      await runtime.sendMessage({
+        type: 'WALLET_SELECTED',
+        walletId: walletId,
+        requestId: requestId,
+        protocol: protocol
+      });
+
+      // Invoke the wallet
+      window.dispatchEvent(new CustomEvent('DC_INVOKE_WALLET', {
+        detail: {
+          requestId: requestId,
+          wallet: wallet,
+          protocol: protocol,
+          request: selectedRequest
+        }
+      }));
+    } catch (error) {
+      console.error('Error handling wallet selection:', error);
       window.dispatchEvent(new CustomEvent('DC_CREDENTIALS_RESPONSE', {
         detail: {
           requestId: requestId,

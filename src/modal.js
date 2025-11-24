@@ -6,6 +6,8 @@
 (function() {
   'use strict';
 
+  console.log('[modal.js] Loading wallet selector modal');
+
   // Create modal HTML
   const modalHTML = `
     <div id="dc-wallet-modal-overlay" style="
@@ -100,6 +102,7 @@
    * @param {Function} onCancel - Callback when cancelled
    */
   window.showWalletSelector = function(wallets, onSelect, onNative, onCancel) {
+    console.log('[modal.js] showWalletSelector called with', wallets);
     // Remove any existing modal
     const existing = document.getElementById('dc-wallet-modal-overlay');
     if (existing) {
@@ -168,7 +171,8 @@
         });
 
         // Click handler
-        walletItem.addEventListener('click', function() {
+        walletItem.addEventListener('click', function(e) {
+          e.stopPropagation(); // Prevent bubbling to overlay
           modal.remove();
           onSelect(wallet);
         });
@@ -189,12 +193,14 @@
     }
 
     // Button handlers
-    document.getElementById('dc-wallet-native').addEventListener('click', function() {
+    document.getElementById('dc-wallet-native').addEventListener('click', function(e) {
+      e.stopPropagation();
       modal.remove();
       onNative();
     });
 
-    document.getElementById('dc-wallet-cancel').addEventListener('click', function() {
+    document.getElementById('dc-wallet-cancel').addEventListener('click', function(e) {
+      e.stopPropagation();
       modal.remove();
       onCancel();
     });
@@ -229,5 +235,57 @@
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
   }
+
+  console.log('[modal.js] Wallet selector modal loaded, window.showWalletSelector =', typeof window.showWalletSelector);
+
+  // Listen for show wallet selector events from content script
+  window.addEventListener('DC_SHOW_WALLET_SELECTOR', function(event) {
+    console.log('[modal.js] Received DC_SHOW_WALLET_SELECTOR event:', event.detail);
+    const { requestId, wallets, requests } = event.detail;
+    
+    window.showWalletSelector(
+      wallets,
+      // On wallet selected
+      (wallet) => {
+        console.log('[modal.js] Wallet selected:', wallet.name);
+        
+        // Find matching request for this wallet's protocols
+        const selectedRequest = requests.find(req => 
+          wallet.protocols && wallet.protocols.includes(req.protocol)
+        ) || requests[0]; // fallback to first request
+        
+        // Notify content script which will forward to background
+        window.dispatchEvent(new CustomEvent('DC_WALLET_SELECTED', {
+          detail: {
+            requestId: requestId,
+            walletId: wallet.id,
+            wallet: wallet,
+            protocol: selectedRequest.protocol,
+            selectedRequest: selectedRequest
+          }
+        }));
+      },
+      // On native browser wallet chosen
+      () => {
+        console.log('[modal.js] Using native browser wallet');
+        window.dispatchEvent(new CustomEvent('DC_CREDENTIALS_RESPONSE', {
+          detail: {
+            requestId: requestId,
+            useNative: true
+          }
+        }));
+      },
+      // On cancel
+      () => {
+        console.log('[modal.js] Wallet selection cancelled');
+        window.dispatchEvent(new CustomEvent('DC_CREDENTIALS_RESPONSE', {
+          detail: {
+            requestId: requestId,
+            error: 'User cancelled the request'
+          }
+        }));
+      }
+    );
+  });
 
 })();

@@ -29,6 +29,11 @@ const filesToCopy = [
   'options.js'
 ];
 
+// Directories to copy recursively
+const dirsToCopy = [
+  'protocols'
+];
+
 console.log(`Building ${browser} extension...`);
 
 // Create target directory if it doesn't exist
@@ -46,6 +51,38 @@ filesToCopy.forEach(file => {
     console.log(`✓ Copied ${file}`);
   } else {
     console.warn(`⚠ Warning: ${file} not found in src/`);
+  }
+});
+
+// Copy directories recursively
+function copyDirectory(src, dest) {
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true });
+  }
+  
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+  
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    
+    if (entry.isDirectory()) {
+      copyDirectory(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
+dirsToCopy.forEach(dir => {
+  const srcPath = path.join(srcDir, dir);
+  const targetPath = path.join(targetDir, dir);
+  
+  if (fs.existsSync(srcPath)) {
+    copyDirectory(srcPath, targetPath);
+    console.log(`✓ Copied ${dir}/ directory`);
+  } else {
+    console.warn(`⚠ Warning: ${dir}/ not found in src/`);
   }
 });
 

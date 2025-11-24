@@ -23,7 +23,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["inject.js", "protocols.js", "modal.js"],
+      "resources": ["inject.js", "protocols.js", "protocols/*.js", "modal.js"],
       "matches": ["<all_urls>"]
     }
   ],

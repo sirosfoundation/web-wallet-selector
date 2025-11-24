@@ -21,6 +21,7 @@ const DEFAULT_WALLETS = [
 const STORAGE_KEYS = {
   WALLETS: 'configured_wallets',
   ENABLED: 'extension_enabled',
+  DEVELOPER_MODE: 'developer_mode',
   STATS: 'usage_stats'
 };
 
@@ -197,11 +198,26 @@ async function handleMessage(message, sender, sendResponse) {
     
     else if (message.type === 'GET_SETTINGS') {
       const storage = typeof browser !== 'undefined' ? browser.storage : chrome.storage;
-      const result = await storage.local.get([STORAGE_KEYS.ENABLED, STORAGE_KEYS.STATS]);
+      const result = await storage.local.get([STORAGE_KEYS.ENABLED, STORAGE_KEYS.DEVELOPER_MODE, STORAGE_KEYS.STATS]);
       sendResponse({
         enabled: result[STORAGE_KEYS.ENABLED] !== false,
+        developerMode: result[STORAGE_KEYS.DEVELOPER_MODE] === true,
         stats: result[STORAGE_KEYS.STATS] || { interceptCount: 0, walletUses: {} }
       });
+      return true;
+    }
+    
+    else if (message.type === 'SAVE_SETTINGS') {
+      const storage = typeof browser !== 'undefined' ? browser.storage : chrome.storage;
+      const updates = {};
+      if (message.enabled !== undefined) {
+        updates[STORAGE_KEYS.ENABLED] = message.enabled;
+      }
+      if (message.developerMode !== undefined) {
+        updates[STORAGE_KEYS.DEVELOPER_MODE] = message.developerMode;
+      }
+      await storage.local.set(updates);
+      sendResponse({ success: true });
       return true;
     }
     

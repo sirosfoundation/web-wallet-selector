@@ -552,6 +552,12 @@
             <input type="color" id="wallet-color" class="form-input" value="#1C4587">
           </div>
 
+          <div class="form-group" id="add-protocols-group" style="display: none;">
+            <label class="form-label" for="wallet-protocols">Supported Protocols</label>
+            <textarea id="wallet-protocols" class="form-textarea" placeholder="One protocol per line, e.g.:&#10;openid4vp&#10;openid4vp-v1-unsigned&#10;openid4vp-v1-signed&#10;w3c-vc"></textarea>
+            <span class="form-help">Enter protocol identifiers supported by this wallet (one per line)</span>
+          </div>
+
           <div class="form-group">
             <div class="checkbox-group">
               <input type="checkbox" id="wallet-enabled" checked>
@@ -593,6 +599,14 @@
               <label for="extension-enabled">Enable wallet interception</label>
             </div>
             <span class="form-help">When disabled, all requests will use the browser's native implementation</span>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="developer-mode">
+              <label for="developer-mode">Developer Mode</label>
+            </div>
+            <span class="form-help">Enable advanced features like editing supported protocols for each wallet</span>
           </div>
 
           <div class="form-group">
@@ -648,6 +662,12 @@
           <div class="form-group">
             <label class="form-label" for="edit-wallet-color">Color</label>
             <input type="color" id="edit-wallet-color" class="form-input">
+          </div>
+
+          <div class="form-group" id="edit-protocols-group" style="display: none;">
+            <label class="form-label" for="edit-wallet-protocols">Supported Protocols</label>
+            <textarea id="edit-wallet-protocols" class="form-textarea" placeholder="One protocol per line, e.g.:&#10;openid4vp&#10;openid4vp-v1-unsigned&#10;openid4vp-v1-signed&#10;w3c-vc"></textarea>
+            <span class="form-help">Enter protocol identifiers supported by this wallet (one per line)</span>
           </div>
 
           <div class="form-group">

@@ -14,6 +14,7 @@ const WWWALLET_PRESETS = [
     icon: '🌐',
     color: '#1C4587',
     description: 'Official wwWallet demonstration instance',
+    protocols: ['openid4vp', 'openid4vp-v1-unsigned', 'openid4vp-v1-signed'],
     preset: true
   },
   {
@@ -22,6 +23,7 @@ const WWWALLET_PRESETS = [
     icon: '🇪🇺',
     color: '#0033a1',
     description: 'European Union official wallet instance',
+    protocols: ['openid4vp', 'openid4vp-v1-unsigned', 'openid4vp-v1-signed'],
     preset: true
   },
   {
@@ -30,18 +32,20 @@ const WWWALLET_PRESETS = [
     icon: '🧪',
     color: '#10b981',
     description: 'wwWallet testing environment',
+    protocols: ['openid4vp', 'openid4vp-v1-unsigned', 'openid4vp-v1-signed'],
     preset: true
   }
 ];
 
 let wallets = [];
-let settings = { enabled: true, stats: { interceptCount: 0, walletUses: {} } };
+let settings = { enabled: true, developerMode: false, stats: { interceptCount: 0, walletUses: {} } };
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async function() {
   await loadData();
   setupEventListeners();
   renderAll();
+  updateDeveloperModeUI();
 });
 
 /**
@@ -53,7 +57,7 @@ async function loadData() {
     const settingsResponse = await runtime.sendMessage({ type: 'GET_SETTINGS' });
     
     wallets = walletsResponse.wallets || [];
-    settings = settingsResponse || { enabled: true, stats: { interceptCount: 0, walletUses: {} } };
+    settings = settingsResponse || { enabled: true, developerMode: false, stats: { interceptCount: 0, walletUses: {} } };
   } catch (error) {
     console.error('Failed to load data:', error);
     showNotification('Failed to load data', 'error');
@@ -85,6 +89,7 @@ function setupEventListeners() {
 
   // Settings
   document.getElementById('extension-enabled').addEventListener('change', handleToggleEnabled);
+  document.getElementById('developer-mode').addEventListener('change', handleToggleDeveloperMode);
   document.getElementById('clear-stats').addEventListener('click', handleClearStats);
   document.getElementById('export-config').addEventListener('click', handleExportConfig);
   document.getElementById('import-config').addEventListener('change', handleImportConfig);
@@ -164,6 +169,17 @@ function renderWalletCard(wallet) {
   const uses = settings.stats.walletUses[wallet.id] || 0;
   const isDefault = wallets.findIndex(w => w.id === wallet.id) === 0;
   
+  // Build protocols display for developer mode
+  let protocolsDisplay = '';
+  if (settings.developerMode && wallet.protocols && wallet.protocols.length > 0) {
+    protocolsDisplay = `
+      <div class="wallet-protocols" style="margin-top: 8px; padding: 8px; background: #f3f4f6; border-radius: 6px;">
+        <div style="font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">Protocols:</div>
+        <div style="font-size: 12px; color: #374151;">${wallet.protocols.map(p => `<code style="background: white; padding: 2px 6px; border-radius: 3px; margin-right: 4px;">${escapeHtml(p)}</code>`).join('')}</div>
+      </div>
+    `;
+  }
+  
   return `
     <div class="wallet-card ${wallet.enabled ? '' : 'disabled'}" data-wallet-id="${wallet.id}">
       <div class="wallet-header">
@@ -177,6 +193,7 @@ function renderWalletCard(wallet) {
       </div>
       
       ${wallet.description ? `<div class="wallet-description">${escapeHtml(wallet.description)}</div>` : ''}
+      ${protocolsDisplay}
       
       <div class="wallet-meta">
         ${wallet.enabled ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-warning">Disabled</span>'}
@@ -230,6 +247,7 @@ function renderStats() {
  */
 function renderSettings() {
   document.getElementById('extension-enabled').checked = settings.enabled !== false;
+  document.getElementById('developer-mode').checked = settings.developerMode === true;
 }
 
 /**
@@ -250,6 +268,7 @@ async function addPresetWallet(preset) {
     icon: preset.icon,
     color: preset.color,
     description: preset.description,
+    protocols: preset.protocols || [],
     enabled: true,
     preset: true
   };
@@ -278,6 +297,16 @@ async function handleAddWallet(e) {
     preset: false
   };
 
+  // Add protocols if developer mode is enabled
+  if (settings.developerMode) {
+    const protocolsText = document.getElementById('wallet-protocols').value.trim();
+    if (protocolsText) {
+      wallet.protocols = protocolsText.split('\n')
+        .map(p => p.trim())
+        .filter(p => p.length > 0);
+    }
+  }
+
   wallets.push(wallet);
   await saveWallets();
   
@@ -299,6 +328,16 @@ function openEditModal(wallet) {
   document.getElementById('edit-wallet-color').value = wallet.color || '#1C4587';
   document.getElementById('edit-wallet-enabled').checked = wallet.enabled;
   
+  // Populate protocols if developer mode is enabled
+  if (settings.developerMode && wallet.protocols) {
+    document.getElementById('edit-wallet-protocols').value = wallet.protocols.join('\n');
+  } else {
+    document.getElementById('edit-wallet-protocols').value = '';
+  }
+  
+  // Ensure developer mode UI is updated for the modal
+  updateDeveloperModeUI();
+  
   document.getElementById('edit-modal').classList.add('active');
 }
 
@@ -318,7 +357,7 @@ async function handleSaveEdit() {
   
   if (walletIndex === -1) return;
 
-  wallets[walletIndex] = {
+  const updatedWallet = {
     ...wallets[walletIndex],
     name: document.getElementById('edit-wallet-name').value,
     url: document.getElementById('edit-wallet-url').value,
@@ -327,6 +366,20 @@ async function handleSaveEdit() {
     color: document.getElementById('edit-wallet-color').value,
     enabled: document.getElementById('edit-wallet-enabled').checked
   };
+
+  // Update protocols if developer mode is enabled
+  if (settings.developerMode) {
+    const protocolsText = document.getElementById('edit-wallet-protocols').value.trim();
+    if (protocolsText) {
+      updatedWallet.protocols = protocolsText.split('\n')
+        .map(p => p.trim())
+        .filter(p => p.length > 0);
+    } else {
+      updatedWallet.protocols = [];
+    }
+  }
+
+  wallets[walletIndex] = updatedWallet;
 
   await saveWallets();
   closeEditModal();
@@ -362,15 +415,45 @@ async function handleToggleWallet(walletId) {
 }
 
 /**
- * Handle toggle extension enabled
+ * Handle toggle enabled
  */
 async function handleToggleEnabled(e) {
-  try {
-    await runtime.sendMessage({ type: 'TOGGLE_ENABLED', enabled: e.target.checked });
-    showNotification(`Extension ${e.target.checked ? 'enabled' : 'disabled'}`, 'success');
-  } catch (error) {
-    console.error('Failed to toggle extension:', error);
-    showNotification('Failed to update settings', 'error');
+  settings.enabled = e.target.checked;
+  await saveSettings();
+  showNotification(
+    settings.enabled ? 'Extension enabled' : 'Extension disabled',
+    'success'
+  );
+}
+
+/**
+ * Handle toggle developer mode
+ */
+async function handleToggleDeveloperMode(e) {
+  settings.developerMode = e.target.checked;
+  await saveSettings();
+  updateDeveloperModeUI();
+  showNotification(
+    settings.developerMode ? 'Developer mode enabled' : 'Developer mode disabled',
+    'success'
+  );
+}
+
+/**
+ * Update UI based on developer mode state
+ */
+function updateDeveloperModeUI() {
+  const devMode = settings.developerMode === true;
+  
+  // Show/hide protocols fields in add and edit forms
+  const addProtocolsGroup = document.getElementById('add-protocols-group');
+  const editProtocolsGroup = document.getElementById('edit-protocols-group');
+  
+  if (addProtocolsGroup) {
+    addProtocolsGroup.style.display = devMode ? 'flex' : 'none';
+  }
+  if (editProtocolsGroup) {
+    editProtocolsGroup.style.display = devMode ? 'flex' : 'none';
   }
 }
 
@@ -465,6 +548,22 @@ async function saveWallets() {
   } catch (error) {
     console.error('Failed to save wallets:', error);
     showNotification('Failed to save changes', 'error');
+  }
+}
+
+/**
+ * Save settings to storage
+ */
+async function saveSettings() {
+  try {
+    await runtime.sendMessage({ 
+      type: 'SAVE_SETTINGS', 
+      enabled: settings.enabled,
+      developerMode: settings.developerMode
+    });
+  } catch (error) {
+    console.error('Failed to save settings:', error);
+    showNotification('Failed to save settings', 'error');
   }
 }
 
