@@ -46,5 +46,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cross-browser compatible codebase
 - Automated build process
 
-[Unreleased]: https://github.com/yourusername/dc-api-interceptor/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/yourusername/dc-api-interceptor/releases/tag/v1.0.0
+[Unreleased]: https://github.com/sirosfoundation/web-wallet-selector/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/sirosfoundation/web-wallet-selector/releases/tag/v1.0.0
