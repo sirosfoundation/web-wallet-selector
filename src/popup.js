@@ -1,5 +1,5 @@
 /**
- * Popup script for Digital Credentials Wallet Selector extension
+ * Popup script for Web Wallet Selector extension
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
   toggleBtn.addEventListener('click', async function() {
     const response = await runtime.sendMessage({ type: 'GET_SETTINGS' });
     const newState = !response.enabled;
-    
+
     await runtime.sendMessage({ type: 'TOGGLE_ENABLED', enabled: newState });
     updateUI(newState, response.stats);
   });
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
       const settings = await runtime.sendMessage({ type: 'GET_SETTINGS' });
       const wallets = await runtime.sendMessage({ type: 'GET_WALLETS' });
-      
+
       updateUI(settings.enabled, settings.stats);
       displayWallets(wallets.wallets, settings.stats);
     } catch (error) {
@@ -100,10 +100,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     walletList.innerHTML = wallets.slice(0, 3).map(wallet => {
       const uses = stats?.walletUses?.[wallet.id] || 0;
-      const statusBadge = wallet.enabled 
+      const statusBadge = wallet.enabled
         ? `<span class="wallet-status">Active</span>`
         : `<span class="wallet-status" style="background: #fee2e2; color: #991b1b;">Disabled</span>`;
-      
+
       return `
         <div class="wallet-item">
           <span class="wallet-icon">${wallet.icon || '🔐'}</span>

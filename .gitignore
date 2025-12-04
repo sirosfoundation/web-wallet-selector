@@ -20,6 +20,7 @@ chrome/options.html
 chrome/options.js
 chrome/icons/icon*.png
 chrome/icons/logo-*.svg
+chrome/protocols
 
 firefox/background.js
 firefox/content.js
@@ -32,6 +33,7 @@ firefox/options.html
 firefox/options.js
 firefox/icons/icon*.png
 firefox/icons/logo-*.svg
+firefox/protocols
 
 safari/background.js
 safari/content.js
@@ -44,6 +46,7 @@ safari/options.html
 safari/options.js
 safari/icons/icon*.png
 safari/icons/logo-*.svg
+safari/protocols
 
 # Source generated icons (regenerated from SVG)
 src/icons/icon*.png
