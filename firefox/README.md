@@ -1,6 +1,6 @@
-# Firefox Extension - DC API Interceptor
+# Firefox Extension - Web Wallet Selector
 
-This is the Firefox version of the DC API Interceptor extension.
+This is the Firefox version of the Web Wallet Selector extension.
 
 ## Installation
 

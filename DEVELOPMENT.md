@@ -256,14 +256,14 @@ npm run test:integration
 2. Convert to Safari Web Extension (first time only):
 
    ```bash
-   xcrun safari-web-extension-converter safari/ --app-name "DC API Interceptor"
+   xcrun safari-web-extension-converter safari/ --app-name "Web Wallet Selector"
    ```
 
 3. Open the generated Xcode project and run it
 
 4. Enable in Safari:
    - Safari → Preferences → Extensions
-   - Enable "DC API Interceptor"
+   - Enable "Web Wallet Selector"
 
 5. View logs:
    - Develop menu → Show Extension Background Page
