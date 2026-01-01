@@ -16,24 +16,6 @@ const WWWALLET_PRESETS = [
     description: 'Official wwWallet demonstration instance',
     protocols: ['openid4vp', 'openid4vp-v1-unsigned', 'openid4vp-v1-signed'],
     preset: true
-  },
-  {
-    name: 'wwWallet EU',
-    url: 'https://wallet.europa.eu',
-    icon: '🇪🇺',
-    color: '#0033a1',
-    description: 'European Union official wallet instance',
-    protocols: ['openid4vp', 'openid4vp-v1-unsigned', 'openid4vp-v1-signed'],
-    preset: true
-  },
-  {
-    name: 'wwWallet Test',
-    url: 'https://test.wwwallet.org',
-    icon: '🧪',
-    color: '#10b981',
-    description: 'wwWallet testing environment',
-    protocols: ['openid4vp', 'openid4vp-v1-unsigned', 'openid4vp-v1-signed'],
-    preset: true
   }
 ];
 
