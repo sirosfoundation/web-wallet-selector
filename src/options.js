@@ -153,21 +153,30 @@ function renderWallets() {
         <div class="empty-state-icon">🔐</div>
         <div class="empty-state-title">No wallets configured</div>
         <div class="empty-state-text">Add your first digital wallet to get started</div>
-        <button class="btn" onclick="switchTab('add')">Add Your First Wallet</button>
+        <button class="btn empty-state-add-btn">Add Your First Wallet</button>
       </div>
     `;
+    // Attach click handler for empty state button
+    container.querySelector('.empty-state-add-btn').addEventListener('click', function() {
+      switchTab('add');
+    });
     return;
   }
 
   container.innerHTML = `
     <div class="wallet-grid">
       ${wallets.map(wallet => renderWalletCard(wallet)).join('')}
-      <div class="add-wallet-card" onclick="switchTab('add')">
+      <div class="add-wallet-card">
         <div class="icon">+</div>
         <div>Add Another Wallet</div>
       </div>
     </div>
   `;
+  
+  // Attach click handler for add another wallet card
+  container.querySelector('.add-wallet-card').addEventListener('click', function() {
+    switchTab('add');
+  });
 
   // Attach event listeners to wallet actions
   wallets.forEach((wallet, index) => {
