@@ -5,7 +5,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   const statusDiv = document.getElementById('status');
   const statusText = document.getElementById('statusText');
-  const toggleBtn = document.getElementById('toggleBtn');
+  const extensionToggle = document.getElementById('extensionToggle');
   const clearBtn = document.getElementById('clearBtn');
   const configureBtn = document.getElementById('configureBtn');
   const interceptCount = document.getElementById('interceptCount');
@@ -19,12 +19,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Load initial state
   loadState();
 
-  // Toggle extension
-  toggleBtn.addEventListener('click', async function() {
-    const response = await runtime.sendMessage({ type: 'GET_SETTINGS' });
-    const newState = !response.enabled;
-    
+  // Toggle extension via header toggle switch
+  extensionToggle.addEventListener('change', async function() {
+    const newState = this.checked;
     await runtime.sendMessage({ type: 'TOGGLE_ENABLED', enabled: newState });
+    const response = await runtime.sendMessage({ type: 'GET_SETTINGS' });
     updateUI(newState, response.stats);
   });
 
@@ -65,14 +64,14 @@ document.addEventListener('DOMContentLoaded', function() {
    * Update UI based on enabled state
    */
   function updateUI(enabled, stats) {
+    extensionToggle.checked = enabled;
+    
     if (enabled) {
       statusDiv.className = 'status active';
       statusText.textContent = 'Active & Monitoring';
-      toggleBtn.textContent = 'Disable Extension';
     } else {
       statusDiv.className = 'status inactive';
       statusText.textContent = 'Disabled';
-      toggleBtn.textContent = 'Enable Extension';
     }
 
     if (stats) {
@@ -88,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
       walletList.innerHTML = `
         <div style="text-align: center; padding: 20px; color: #6b7280; font-size: 13px;">
           No wallets configured yet.<br>
-          Click "Configure Wallets" to add one.
+          Click "Add or Configure" to add one.
         </div>
       `;
       walletCount.textContent = '0';
@@ -98,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const enabledWallets = wallets.filter(w => w.enabled);
     walletCount.textContent = enabledWallets.length;
 
-    walletList.innerHTML = wallets.slice(0, 3).map(wallet => {
+    walletList.innerHTML = wallets.map(wallet => {
       const uses = stats?.walletUses?.[wallet.id] || 0;
       const statusBadge = wallet.enabled 
         ? `<span class="wallet-status">Active</span>`
@@ -112,14 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
       `;
     }).join('');
-
-    if (wallets.length > 3) {
-      walletList.innerHTML += `
-        <div style="text-align: center; padding: 8px; font-size: 12px; color: #6b7280;">
-          +${wallets.length - 3} more wallet${wallets.length - 3 > 1 ? 's' : ''}
-        </div>
-      `;
-    }
   }
 
   /**

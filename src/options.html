@@ -14,32 +14,53 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       background: #f9fafb;
-      color: #111827;
+      color: #000000;
       line-height: 1.5;
     }
 
     .header {
-      background: linear-gradient(135deg, #1C4587 0%, #2557A7 100%);
-      color: white;
-      padding: 32px 24px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      background: #ffffff;
+      color: #111827;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid #e5e7eb;
     }
 
-    .header h1 {
-      font-size: 28px;
+    .header .logo {
+      width: 48px;
+      height: 48px;
+    }
+
+    .header-text h1 {
+      font-size: 24px;
       font-weight: 600;
-      margin-bottom: 8px;
+      color: #1C4587;
+      margin-bottom: 4px;
     }
 
-    .header p {
-      font-size: 15px;
-      opacity: 0.9;
+    .header-text p {
+      font-size: 14px;
+      color: #6b7280;
     }
 
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 32px 24px;
+    }
+
+    /* Toast notifications container */
+    .toast-container {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .tabs {
@@ -79,6 +100,59 @@
       display: block;
     }
 
+    /* Stats cards for My Wallets page */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #bae6fd;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-card.success {
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border-color: #bbf7d0;
+    }
+
+    .stat-card.purple {
+      background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+      border-color: #e9d5ff;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-info .stat-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: #1C4587;
+      line-height: 1;
+    }
+
+    .stat-info .stat-label {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
     .section {
       background: white;
       border-radius: 12px;
@@ -98,6 +172,19 @@
       font-size: 18px;
       font-weight: 600;
       color: #111827;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    .page-description {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 24px;
     }
 
     .btn {
@@ -136,11 +223,14 @@
     }
 
     .btn-danger {
-      background: #ef4444;
+      background: transparent;
+      color: #dc2626;
+      border: none;
+      padding: 8px;
     }
 
     .btn-danger:hover {
-      background: #dc2626;
+      background: #fef2f2;
     }
 
     .btn-small {
@@ -148,9 +238,13 @@
       font-size: 13px;
     }
 
+    .btn .plus-icon {
+      color: #ffffff;
+    }
+
     .wallet-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 16px;
     }
 
@@ -176,13 +270,13 @@
       display: flex;
       align-items: start;
       gap: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .wallet-icon {
-      font-size: 48px;
-      width: 64px;
-      height: 64px;
+      font-size: 32px;
+      width: 56px;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -196,23 +290,16 @@
     }
 
     .wallet-name {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       color: #111827;
       margin-bottom: 4px;
     }
 
     .wallet-url {
-      font-size: 13px;
+      font-size: 12px;
       color: #6b7280;
       word-break: break-all;
-      margin-bottom: 8px;
-    }
-
-    .wallet-description {
-      font-size: 14px;
-      color: #6b7280;
-      margin-bottom: 12px;
     }
 
     .wallet-meta {
@@ -246,9 +333,115 @@
 
     .wallet-actions {
       display: flex;
+      align-items: center;
       gap: 8px;
       padding-top: 12px;
       border-top: 1px solid #e5e7eb;
+    }
+
+    .wallet-actions-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #d1d5db;
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background-color: #1C4587;
+    }
+
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Trash icon button */
+    .btn-icon {
+      background: transparent;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      border-radius: 6px;
+      color: #6b7280;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .btn-icon.danger:hover {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .btn-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Add another wallet card */
+    .add-wallet-card {
+      border: 2px dashed #d1d5db;
+      border-radius: 12px;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #6b7280;
+    }
+
+    .add-wallet-card:hover {
+      border-color: #1C4587;
+      background: #f0f9ff;
+      color: #1C4587;
+    }
+
+    .add-wallet-card .icon {
+      font-size: 32px;
+      margin-bottom: 8px;
     }
 
     .form-grid {
@@ -256,16 +449,27 @@
       gap: 20px;
     }
 
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .form-label {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       color: #374151;
+    }
+
+    .form-help {
+      font-size: 12px;
+      color: #6b7280;
     }
 
     .form-label.required::after {
@@ -290,7 +494,7 @@
     .form-textarea:focus {
       outline: none;
       border-color: #1C4587;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      box-shadow: 0 0 0 3px rgba(28, 69, 135, 0.1);
     }
 
     .form-textarea {
@@ -298,11 +502,11 @@
       min-height: 80px;
     }
 
-    .form-help {
-      font-size: 13px;
-      color: #6b7280;
+    .form-input.small {
+      max-width: 200px;
     }
 
+    /* Custom checkbox styling */
     .checkbox-group {
       display: flex;
       align-items: center;
@@ -313,6 +517,168 @@
       width: 18px;
       height: 18px;
       cursor: pointer;
+      accent-color: #1C4587;
+    }
+
+    /* Preset cards */
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .preset-card {
+      padding: 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .preset-card:hover {
+      border-color: #1C4587;
+      background: #f0f9ff;
+    }
+
+    .preset-card.added {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+
+    .preset-icon {
+      font-size: 28px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .preset-info {
+      flex: 1;
+    }
+
+    .preset-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 2px;
+    }
+
+    .preset-status {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .preset-status.added {
+      color: #059669;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .preset-btn {
+      padding: 6px 12px;
+      background: #1C4587;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preset-btn:hover {
+      background: #14366B;
+    }
+
+    .preset-btn:disabled {
+      background: #d1d5db;
+      cursor: not-allowed;
+    }
+
+    /* Icon selector */
+    .icon-selector {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-preview {
+      width: 56px;
+      height: 56px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      background: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .icon-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .icon-preview .placeholder {
+      color: #9ca3af;
+    }
+
+    .icon-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .icon-emoji-grid {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .icon-emoji-btn {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+
+    .icon-emoji-btn:hover {
+      border-color: #1C4587;
+      background: #f0f9ff;
+    }
+
+    .icon-emoji-btn.selected {
+      border-color: #1C4587;
+      background: #dbeafe;
+    }
+
+    .icon-upload-btn {
+      font-size: 12px;
+      color: #6b7280;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+
+    .icon-upload-btn:hover {
+      color: #1C4587;
     }
 
     .modal {
@@ -386,12 +752,6 @@
       color: #065f46;
     }
 
-    .alert-warning {
-      background: #fef3c7;
-      border: 1px solid #fde68a;
-      color: #92400e;
-    }
-
     .empty-state {
       text-align: center;
       padding: 64px 24px;
@@ -415,69 +775,145 @@
       margin-bottom: 24px;
     }
 
-    .preset-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 12px;
-      margin-bottom: 24px;
+    /* Settings page */
+    .settings-section {
+      margin-bottom: 32px;
     }
 
-    .preset-card {
-      padding: 16px;
-      border: 2px solid #e5e7eb;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
+    .settings-section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .setting-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 16px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .setting-item:last-child {
+      border-bottom: none;
+    }
+
+    .setting-info {
+      flex: 1;
+      margin-right: 24px;
+    }
+
+    .setting-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #111827;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .setting-description {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    /* Info tooltip */
+    .info-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      color: #6b7280;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: help;
+      position: relative;
+    }
+
+    .info-icon:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111827;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 400;
+      white-space: nowrap;
+      z-index: 100;
+      max-width: 250px;
+      white-space: normal;
       text-align: center;
     }
 
-    .preset-card:hover {
-      border-color: #1C4587;
-      background: #f0f9ff;
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
     }
 
-    .preset-icon {
-      font-size: 32px;
-      margin-bottom: 8px;
+    /* File input styling */
+    .file-input-wrapper {
+      position: relative;
     }
 
-    .preset-name {
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    .file-input-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: white;
+      color: #374151;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
       font-size: 14px;
       font-weight: 500;
-      color: #374151;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
+    .file-input-label:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
     }
 
-    .stat-card {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .stat-value {
-      font-size: 32px;
-      font-weight: bold;
-      color: #1C4587;
-      margin-bottom: 4px;
-    }
-
-    .stat-label {
-      font-size: 14px;
-      color: #6b7280;
+    .file-input-label svg {
+      width: 18px;
+      height: 18px;
     }
   </style>
 </head>
 <body>
+  <div class="toast-container" id="toast-container"></div>
+
   <div class="header">
-    <h1>🔐 Digital Wallet Configuration</h1>
-    <p>Manage your digital identity wallets and credential providers</p>
+    <img src="icons/logo-dark.svg" alt="Siros" class="logo">
+    <div class="header-text">
+      <h1>Digital Wallet Configuration</h1>
+      <p>Manage your digital identity wallets and credential providers</p>
+    </div>
   </div>
 
   <div class="container">
@@ -489,12 +925,36 @@
 
     <!-- My Wallets Tab -->
     <div class="tab-content active" id="wallets-tab">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon">📁</div>
+          <div class="stat-info">
+            <div class="stat-value" id="total-wallets">0</div>
+            <div class="stat-label">Total Wallets</div>
+          </div>
+        </div>
+        <div class="stat-card success">
+          <div class="stat-icon">✓</div>
+          <div class="stat-info">
+            <div class="stat-value" id="active-wallets">0</div>
+            <div class="stat-label">Active Wallets</div>
+          </div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-icon">📊</div>
+          <div class="stat-info">
+            <div class="stat-value" id="total-requests">0</div>
+            <div class="stat-label">Total Requests</div>
+          </div>
+        </div>
+      </div>
+
       <div class="section">
         <div class="section-header">
-          <h2 class="section-title">Configured Wallets</h2>
+          <h2 class="section-title">My Wallets</h2>
           <button class="btn" id="add-wallet-btn">
-            <span>➕</span>
-            <span>Add Wallet</span>
+            <span class="plus-icon">+</span>
+            <span>Add New Wallet</span>
           </button>
         </div>
 
@@ -506,15 +966,11 @@
 
     <!-- Add Wallet Tab -->
     <div class="tab-content" id="add-tab">
+      <h1 class="page-title">Add a Wallet</h1>
+      <p class="page-description">Select a wwWallet provider below or add a custom wallet URL. wwWallet is an open-source digital identity wallet supporting W3C Verifiable Credentials.</p>
+
       <div class="section">
         <h2 class="section-title">Quick Add - wwWallet Providers</h2>
-        <div class="alert alert-info">
-          <span>ℹ️</span>
-          <div>
-            <strong>wwWallet Integration</strong><br>
-            Select a wwWallet provider below or add a custom wallet URL. wwWallet is an open-source digital identity wallet supporting W3C Verifiable Credentials.
-          </div>
-        </div>
 
         <div class="preset-grid" id="preset-wallets">
           <!-- Preset wallets will be rendered here -->
@@ -524,38 +980,53 @@
       <div class="section">
         <h2 class="section-title">Add Custom Wallet</h2>
         <form id="add-wallet-form" class="form-grid">
-          <div class="form-group">
-            <label class="form-label required" for="wallet-name">Wallet Name</label>
-            <input type="text" id="wallet-name" class="form-input" placeholder="e.g., My Personal Wallet" required>
-            <span class="form-help">A friendly name to identify this wallet</span>
+          <div class="form-row">
+            <div class="form-group">
+              <span class="form-help">A friendly name to identify this wallet</span>
+              <label class="form-label required" for="wallet-name">Wallet Name</label>
+              <input type="text" id="wallet-name" class="form-input" placeholder="e.g., My Personal Wallet" required>
+            </div>
+
+            <div class="form-group">
+              <span class="form-help">The base URL of your wallet provider</span>
+              <label class="form-label required" for="wallet-url">Wallet URL</label>
+              <input type="url" id="wallet-url" class="form-input" placeholder="https://wallet.example.com" required>
+            </div>
           </div>
 
           <div class="form-group">
-            <label class="form-label required" for="wallet-url">Wallet URL</label>
-            <input type="url" id="wallet-url" class="form-input" placeholder="https://wallet.example.com" required>
-            <span class="form-help">The base URL of your wallet provider</span>
-          </div>
-
-          <div class="form-group">
+            <span class="form-help">Optional description for this wallet</span>
             <label class="form-label" for="wallet-description">Description</label>
             <textarea id="wallet-description" class="form-textarea" placeholder="Optional description..."></textarea>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="wallet-icon">Icon (Emoji)</label>
-            <input type="text" id="wallet-icon" class="form-input" placeholder="🔐" maxlength="2">
-            <span class="form-help">Choose an emoji to represent this wallet</span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="wallet-color">Color</label>
-            <input type="color" id="wallet-color" class="form-input" value="#1C4587">
+            <span class="form-help">Choose an icon to represent this wallet</span>
+            <label class="form-label" for="wallet-icon">Icon</label>
+            <div class="icon-selector">
+              <div class="icon-preview" id="icon-preview">
+                <span class="placeholder">🔐</span>
+              </div>
+              <div class="icon-options">
+                <div class="icon-emoji-grid" id="icon-emoji-grid">
+                  <button type="button" class="icon-emoji-btn selected" data-emoji="🔐">🔐</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="🌐">🌐</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="🇪🇺">🇪🇺</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="🧪">🧪</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="💼">💼</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="🏦">🏦</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="🎓">🎓</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="🏥">🏥</button>
+                </div>
+                <input type="hidden" id="wallet-icon" value="🔐">
+              </div>
+            </div>
           </div>
 
           <div class="form-group" id="add-protocols-group" style="display: none;">
+            <span class="form-help">Enter protocol identifiers supported by this wallet (one per line)</span>
             <label class="form-label" for="wallet-protocols">Supported Protocols</label>
             <textarea id="wallet-protocols" class="form-textarea" placeholder="One protocol per line, e.g.:&#10;openid4vp&#10;openid4vp-v1-unsigned&#10;openid4vp-v1-signed&#10;w3c-vc"></textarea>
-            <span class="form-help">Enter protocol identifiers supported by this wallet (one per line)</span>
           </div>
 
           <div class="form-group">
@@ -565,9 +1036,9 @@
             </div>
           </div>
 
-          <div style="display: flex; gap: 12px;">
-            <button type="submit" class="btn">Add Wallet</button>
+          <div class="form-actions">
             <button type="reset" class="btn btn-secondary">Clear Form</button>
+            <button type="submit" class="btn">Add Wallet</button>
           </div>
         </form>
       </div>
@@ -575,54 +1046,78 @@
 
     <!-- Settings Tab -->
     <div class="tab-content" id="settings-tab">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-value" id="total-wallets">0</div>
-          <div class="stat-label">Total Wallets</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="active-wallets">0</div>
-          <div class="stat-label">Active Wallets</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="total-requests">0</div>
-          <div class="stat-label">Total Requests</div>
-        </div>
-      </div>
-
       <div class="section">
-        <h2 class="section-title">Extension Settings</h2>
-        <div class="form-grid">
-          <div class="form-group">
-            <div class="checkbox-group">
+        <div class="settings-section">
+          <h3 class="settings-section-title">Extension Settings</h3>
+          
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-label">Enable wallet interception</div>
+              <div class="setting-description">When disabled, all requests will use the browser's native implementation</div>
+            </div>
+            <label class="toggle-switch">
               <input type="checkbox" id="extension-enabled">
-              <label for="extension-enabled">Enable wallet interception</label>
-            </div>
-            <span class="form-help">When disabled, all requests will use the browser's native implementation</span>
+              <span class="toggle-slider"></span>
+            </label>
           </div>
 
-          <div class="form-group">
-            <div class="checkbox-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-label">
+                Developer Mode
+                <span class="info-icon" data-tooltip="When enabled, you can edit supported protocols for each wallet and access advanced debugging features">?</span>
+              </div>
+              <div class="setting-description">Enable advanced features for developers</div>
+            </div>
+            <label class="toggle-switch">
               <input type="checkbox" id="developer-mode">
-              <label for="developer-mode">Developer Mode</label>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 class="settings-section-title">Configuration Management</h3>
+          
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-label">Clear Statistics</div>
+              <div class="setting-description">Reset all usage statistics and counters</div>
             </div>
-            <span class="form-help">Enable advanced features like editing supported protocols for each wallet</span>
+            <button class="btn btn-secondary btn-small" id="clear-stats">Clear</button>
           </div>
 
-          <div class="form-group">
-            <button class="btn btn-secondary" id="clear-stats">Clear Statistics</button>
-            <span class="form-help">Reset all usage statistics</span>
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-label">Download Configuration</div>
+              <div class="setting-description">Download your wallet configuration(s) as a JSON file</div>
+            </div>
+            <button class="btn btn-secondary btn-small" id="export-config">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download
+            </button>
           </div>
 
-          <div class="form-group">
-            <button class="btn btn-secondary" id="export-config">Export Configuration</button>
-            <span class="form-help">Download your wallet configuration as JSON</span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="import-config">Import Configuration</label>
-            <input type="file" id="import-config" accept=".json">
-            <span class="form-help">Import wallet configuration from a JSON file</span>
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-label">Import Configuration</div>
+              <div class="setting-description">Import wallet configuration from a JSON file</div>
+            </div>
+            <div class="file-input-wrapper">
+              <input type="file" id="import-config" accept=".json">
+              <label for="import-config" class="file-input-label">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                Choose File
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -655,18 +1150,30 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="edit-wallet-icon">Icon (Emoji)</label>
-            <input type="text" id="edit-wallet-icon" class="form-input" maxlength="2">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="edit-wallet-color">Color</label>
-            <input type="color" id="edit-wallet-color" class="form-input">
+            <label class="form-label" for="edit-wallet-icon">Icon</label>
+            <div class="icon-selector">
+              <div class="icon-preview" id="edit-icon-preview">
+                <span class="placeholder">🔐</span>
+              </div>
+              <div class="icon-options">
+                <div class="icon-emoji-grid" id="edit-icon-emoji-grid">
+                  <button type="button" class="icon-emoji-btn" data-emoji="🔐">🔐</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="🌐">🌐</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="🇪🇺">🇪🇺</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="🧪">🧪</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="💼">💼</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="🏦">🏦</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="🎓">🎓</button>
+                  <button type="button" class="icon-emoji-btn" data-emoji="🏥">🏥</button>
+                </div>
+                <input type="hidden" id="edit-wallet-icon">
+              </div>
+            </div>
           </div>
 
           <div class="form-group" id="edit-protocols-group" style="display: none;">
             <label class="form-label" for="edit-wallet-protocols">Supported Protocols</label>
-            <textarea id="edit-wallet-protocols" class="form-textarea" placeholder="One protocol per line, e.g.:&#10;openid4vp&#10;openid4vp-v1-unsigned&#10;openid4vp-v1-signed&#10;w3c-vc"></textarea>
+            <textarea id="edit-wallet-protocols" class="form-textarea" placeholder="One protocol per line"></textarea>
             <span class="form-help">Enter protocol identifiers supported by this wallet (one per line)</span>
           </div>
 
