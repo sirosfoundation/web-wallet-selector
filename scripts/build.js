@@ -34,11 +34,23 @@ const dirsToCopy = [
   'protocols'
 ];
 
+const manifestsDir = path.join(__dirname, '..', 'manifests');
+
 console.log(`Building ${browser} extension...`);
 
 // Create target directory if it doesn't exist
 if (!fs.existsSync(targetDir)) {
   fs.mkdirSync(targetDir, { recursive: true });
+}
+
+// Copy browser-specific manifest
+const manifestSrc = path.join(manifestsDir, `${browser}-manifest.json`);
+const manifestDest = path.join(targetDir, 'manifest.json');
+if (fs.existsSync(manifestSrc)) {
+  fs.copyFileSync(manifestSrc, manifestDest);
+  console.log(`✓ Copied manifest.json`);
+} else {
+  console.warn(`⚠ Warning: ${browser}-manifest.json not found in manifests/`);
 }
 
 // Copy files
