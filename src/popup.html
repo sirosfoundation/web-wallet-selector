@@ -125,9 +125,9 @@
     }
     
     .status.inactive {
-      background-color: #fee2e2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
+      background-color: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fcd34d;
     }
     
     .status-indicator {
@@ -135,6 +135,11 @@
       height: 8px;
       border-radius: 50%;
       background: currentColor;
+    }
+    
+    .wallet-status.disabled {
+      background: #fef3c7;
+      color: #92400e;
     }
     
     .stat-card {
@@ -176,16 +181,17 @@
       font-size: 11px;
       color: #6b7280;
       background: none;
-      border: none;
+      border: 1px solid #e5e7eb;
       cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
       transition: all 0.2s;
     }
     
     .clear-btn:hover {
       background: #f3f4f6;
       color: #374151;
+      border-color: #d1d5db;
     }
     
     .section {
@@ -311,7 +317,7 @@
   <div class="content">
     <div id="status" class="status active">
       <span class="status-indicator"></span>
-      <span id="statusText">Active & Monitoring</span>
+      <span id="statusText">Active & monitoring</span>
     </div>
 
     <div class="stat-card">
@@ -320,7 +326,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
           </svg>
-          Requests Intercepted
+          Requests handled
         </span>
         <button id="clearBtn" class="clear-btn">Clear</button>
       </div>
@@ -337,7 +343,7 @@
       <div class="wallet-list" id="walletList">
         <!-- Wallets will be inserted here -->
       </div>
-      <button id="configureBtn" class="primary">Add or Configure</button>
+      <button id="configureBtn" class="primary">Configure Wallets</button>
     </div>
   </div>
 

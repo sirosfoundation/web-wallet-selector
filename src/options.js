@@ -234,6 +234,9 @@ function renderWalletCard(wallet) {
             <input type="checkbox" class="toggle-wallet" ${wallet.enabled ? 'checked' : ''}>
             <span class="toggle-slider"></span>
           </label>
+        </div>
+        <div class="wallet-actions-right">
+          <button class="btn btn-secondary btn-small btn-edit">Edit</button>
           <button class="btn-icon danger btn-delete" title="Delete wallet">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="3 6 5 6 21 6"/>
@@ -241,7 +244,6 @@ function renderWalletCard(wallet) {
             </svg>
           </button>
         </div>
-        <button class="btn btn-secondary btn-small btn-edit">Edit</button>
       </div>
     </div>
   `;
