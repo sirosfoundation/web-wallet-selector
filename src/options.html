@@ -240,6 +240,8 @@
 
     .btn .plus-icon {
       color: #ffffff;
+      font-weight: bold;
+      font-size: 18px;
     }
 
     .wallet-grid {
@@ -344,6 +346,12 @@
       align-items: center;
       gap: 12px;
       flex: 1;
+    }
+
+    .wallet-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     /* Toggle Switch */
@@ -967,10 +975,11 @@
     <!-- Add Wallet Tab -->
     <div class="tab-content" id="add-tab">
       <h1 class="page-title">Add a Wallet</h1>
-      <p class="page-description">Select a wwWallet provider below or add a custom wallet URL. wwWallet is an open-source digital identity wallet supporting W3C Verifiable Credentials.</p>
+      <p class="page-description">Select a wwWallet provider below or add a custom wallet URL.</p>
 
       <div class="section">
         <h2 class="section-title">Quick Add - wwWallet Providers</h2>
+        <p class="form-help" style="margin-bottom: 16px;">wwWallet is an open-source digital identity wallet supporting W3C Verifiable Credentials.</p>
 
         <div class="preset-grid" id="preset-wallets">
           <!-- Preset wallets will be rendered here -->
@@ -980,29 +989,36 @@
       <div class="section">
         <h2 class="section-title">Add Custom Wallet</h2>
         <form id="add-wallet-form" class="form-grid">
+          <div class="form-group" style="margin-bottom: 16px;">
+            <div class="checkbox-group">
+              <input type="checkbox" id="wallet-enabled" checked>
+              <label for="wallet-enabled">Enable this wallet immediately</label>
+            </div>
+          </div>
+
           <div class="form-row">
             <div class="form-group">
-              <span class="form-help">A friendly name to identify this wallet</span>
               <label class="form-label required" for="wallet-name">Wallet Name</label>
-              <input type="text" id="wallet-name" class="form-input" placeholder="e.g., My Personal Wallet" required>
+              <span class="form-help">A friendly name to identify this wallet</span>
+              <input type="text" id="wallet-name" class="form-input" placeholder="e.g., My Personal Wallet" required style="max-width: 300px;">
             </div>
 
             <div class="form-group">
-              <span class="form-help">The base URL of your wallet provider</span>
               <label class="form-label required" for="wallet-url">Wallet URL</label>
-              <input type="url" id="wallet-url" class="form-input" placeholder="https://wallet.example.com" required>
+              <span class="form-help">The base URL of your wallet provider</span>
+              <input type="url" id="wallet-url" class="form-input" placeholder="https://wallet.example.com" required style="max-width: 300px;">
             </div>
           </div>
 
           <div class="form-group">
-            <span class="form-help">Optional description for this wallet</span>
             <label class="form-label" for="wallet-description">Description</label>
-            <textarea id="wallet-description" class="form-textarea" placeholder="Optional description..."></textarea>
+            <span class="form-help">Optional description for this wallet</span>
+            <textarea id="wallet-description" class="form-textarea" placeholder="Optional description..." style="max-width: 400px;"></textarea>
           </div>
 
           <div class="form-group">
-            <span class="form-help">Choose an icon to represent this wallet</span>
             <label class="form-label" for="wallet-icon">Icon</label>
+            <span class="form-help">Choose an icon to represent this wallet</span>
             <div class="icon-selector">
               <div class="icon-preview" id="icon-preview">
                 <span class="placeholder">🔐</span>
@@ -1024,21 +1040,14 @@
           </div>
 
           <div class="form-group" id="add-protocols-group" style="display: none;">
-            <span class="form-help">Enter protocol identifiers supported by this wallet (one per line)</span>
             <label class="form-label" for="wallet-protocols">Supported Protocols</label>
-            <textarea id="wallet-protocols" class="form-textarea" placeholder="One protocol per line, e.g.:&#10;openid4vp&#10;openid4vp-v1-unsigned&#10;openid4vp-v1-signed&#10;w3c-vc"></textarea>
+            <span class="form-help">Enter protocol identifiers supported by this wallet (one per line)</span>
+            <textarea id="wallet-protocols" class="form-textarea" placeholder="One protocol per line, e.g.:&#10;openid4vp&#10;openid4vp-v1-unsigned&#10;openid4vp-v1-signed&#10;w3c-vc" style="max-width: 400px;"></textarea>
           </div>
 
-          <div class="form-group">
-            <div class="checkbox-group">
-              <input type="checkbox" id="wallet-enabled" checked>
-              <label for="wallet-enabled">Enable this wallet immediately</label>
-            </div>
-          </div>
-
-          <div class="form-actions">
-            <button type="reset" class="btn btn-secondary">Clear Form</button>
-            <button type="submit" class="btn">Add Wallet</button>
+          <div class="form-actions" style="max-width: 400px;">
+            <button type="reset" class="btn btn-secondary btn-small">Clear Form</button>
+            <button type="submit" class="btn btn-small">Add Wallet</button>
           </div>
         </form>
       </div>
@@ -1046,14 +1055,16 @@
 
     <!-- Settings Tab -->
     <div class="tab-content" id="settings-tab">
+      <h1 class="page-title">General Settings</h1>
+      
       <div class="section">
         <div class="settings-section">
           <h3 class="settings-section-title">Extension Settings</h3>
           
           <div class="setting-item">
             <div class="setting-info">
-              <div class="setting-label">Enable wallet interception</div>
-              <div class="setting-description">When disabled, all requests will use the browser's native implementation</div>
+              <div class="setting-label">Wallet interception</div>
+              <div class="setting-description">When wallet interception is disabled, all requests will use the browser's native implementation</div>
             </div>
             <label class="toggle-switch">
               <input type="checkbox" id="extension-enabled">
@@ -1065,7 +1076,7 @@
             <div class="setting-info">
               <div class="setting-label">
                 Developer Mode
-                <span class="info-icon" data-tooltip="When enabled, you can edit supported protocols for each wallet and access advanced debugging features">?</span>
+                <span class="info-icon" data-tooltip="Enable advanced features like editing supported protocols for each wallet">?</span>
               </div>
               <div class="setting-description">Enable advanced features for developers</div>
             </div>
@@ -1074,23 +1085,25 @@
               <span class="toggle-slider"></span>
             </label>
           </div>
-        </div>
 
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-label">Total Requests</div>
+              <div class="setting-description">Clear Total Requests statistics</div>
+            </div>
+            <button class="btn btn-secondary btn-small" id="clear-stats">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
         <div class="settings-section">
           <h3 class="settings-section-title">Configuration Management</h3>
           
           <div class="setting-item">
             <div class="setting-info">
-              <div class="setting-label">Clear Statistics</div>
-              <div class="setting-description">Reset all usage statistics and counters</div>
-            </div>
-            <button class="btn btn-secondary btn-small" id="clear-stats">Clear</button>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-info">
               <div class="setting-label">Download Configuration</div>
-              <div class="setting-description">Download your wallet configuration(s) as a JSON file</div>
+              <div class="setting-description">Download your wallet configurations as a JSON file</div>
             </div>
             <button class="btn btn-secondary btn-small" id="export-config">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1105,7 +1118,7 @@
           <div class="setting-item">
             <div class="setting-info">
               <div class="setting-label">Import Configuration</div>
-              <div class="setting-description">Import wallet configuration from a JSON file</div>
+              <div class="setting-description">Add wallet configurations from a JSON file</div>
             </div>
             <div class="file-input-wrapper">
               <input type="file" id="import-config" accept=".json">
@@ -1115,7 +1128,7 @@
                   <polyline points="17 8 12 3 7 8"/>
                   <line x1="12" y1="3" x2="12" y2="15"/>
                 </svg>
-                Choose File
+                Browse
               </label>
             </div>
           </div>

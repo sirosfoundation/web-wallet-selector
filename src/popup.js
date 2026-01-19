@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (enabled) {
       statusDiv.className = 'status active';
-      statusText.textContent = 'Active & Monitoring';
+      statusText.textContent = 'Active & monitoring';
     } else {
       statusDiv.className = 'status inactive';
       statusText.textContent = 'Disabled';
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const uses = stats?.walletUses?.[wallet.id] || 0;
       const statusBadge = wallet.enabled 
         ? `<span class="wallet-status">Active</span>`
-        : `<span class="wallet-status" style="background: #fee2e2; color: #991b1b;">Disabled</span>`;
+        : `<span class="wallet-status disabled">Disabled</span>`;
       
       return `
         <div class="wallet-item">
