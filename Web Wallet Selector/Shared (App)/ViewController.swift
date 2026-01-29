@@ -16,7 +16,6 @@ import SafariServices
 typealias PlatformViewController = NSViewController
 #endif
 
-let extensionBundleIdentifier = "com.yourCompany.Web-Wallet-Selector.Extension"
 
 class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMessageHandler {
 
@@ -42,17 +41,15 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
 #elseif os(macOS)
         webView.evaluateJavaScript("show('mac')")
 
-        SFSafariExtensionManager.getStateOfSafariExtension(withIdentifier: extensionBundleIdentifier) { (state, error) in
-            guard let state = state, error == nil else {
-                // Insert code to inform the user that something went wrong.
-                return
-            }
+        SFSafariExtensionManager.getStateOfSafariExtension(withIdentifier: Config.extBundleId) { (state, error) in
+            let enabled = state == nil ? "null" : "\(state!.isEnabled)"
 
             DispatchQueue.main.async {
                 if #available(macOS 13, *) {
-                    webView.evaluateJavaScript("show('mac', \(state.isEnabled), true)")
-                } else {
-                    webView.evaluateJavaScript("show('mac', \(state.isEnabled), false)")
+                    webView.evaluateJavaScript("show('mac', \(enabled), true)")
+                }
+                else {
+                    webView.evaluateJavaScript("show('mac', \(enabled), false)")
                 }
             }
         }
@@ -65,9 +62,13 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
             return
         }
 
-        SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
-            guard error == nil else {
-                // Insert code to inform the user that something went wrong.
+        SFSafariApplication.showPreferencesForExtension(withIdentifier: Config.extBundleId) { error in
+            if let error {
+                DispatchQueue.main.async {
+                    let alert = NSAlert(error: error)
+                    alert.runModal()
+                }
+
                 return
             }
 

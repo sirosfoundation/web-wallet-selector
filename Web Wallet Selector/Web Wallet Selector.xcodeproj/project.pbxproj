@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A00D1D122F2B92D8002B5B4B /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00D1D112F2B92D8002B5B4B /* Config.swift */; };
+		A00D1D132F2B92D8002B5B4B /* Config.m in Sources */ = {isa = PBXBuildFile; fileRef = A00D1D102F2B92D8002B5B4B /* Config.m */; };
+		A00D1D142F2B92D8002B5B4B /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00D1D112F2B92D8002B5B4B /* Config.swift */; };
+		A00D1D152F2B92D8002B5B4B /* Config.m in Sources */ = {isa = PBXBuildFile; fileRef = A00D1D102F2B92D8002B5B4B /* Config.m */; };
 		A0444DD62EE1CC4900E7155E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0444DD52EE1CC4900E7155E /* AppDelegate.swift */; };
 		A0444DD82EE1CC4900E7155E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0444DD72EE1CC4900E7155E /* SceneDelegate.swift */; };
 		A0444DDB2EE1CC4900E7155E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A0444DD92EE1CC4900E7155E /* LaunchScreen.storyboard */; };
@@ -98,6 +102,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A00D1D0F2F2B92D8002B5B4B /* Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
+		A00D1D102F2B92D8002B5B4B /* Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Config.m; sourceTree = "<group>"; };
+		A00D1D112F2B92D8002B5B4B /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		A00D1D162F2B92DB002B5B4B /* Web Wallet Selector (iOS)-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Web Wallet Selector (iOS)-Bridging-Header.h"; sourceTree = "<group>"; };
+		A00D1D172F2B92DB002B5B4B /* Web Wallet Selector (macOS)-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Web Wallet Selector (macOS)-Bridging-Header.h"; sourceTree = "<group>"; };
 		A0444DC62EE1CC4800E7155E /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/Main.html; sourceTree = "<group>"; };
 		A0444DC72EE1CC4800E7155E /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		A0444DC82EE1CC4800E7155E /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
@@ -184,8 +193,13 @@
 			isa = PBXGroup;
 			children = (
 				A0444DCA2EE1CC4800E7155E /* ViewController.swift */,
+				A00D1D0F2F2B92D8002B5B4B /* Config.h */,
+				A00D1D102F2B92D8002B5B4B /* Config.m */,
+				A00D1D112F2B92D8002B5B4B /* Config.swift */,
 				A0444DCB2EE1CC4900E7155E /* Assets.xcassets */,
 				A0444DC42EE1CC4800E7155E /* Resources */,
+				A00D1D162F2B92DB002B5B4B /* Web Wallet Selector (iOS)-Bridging-Header.h */,
+				A00D1D172F2B92DB002B5B4B /* Web Wallet Selector (macOS)-Bridging-Header.h */,
 			);
 			path = "Shared (App)";
 			sourceTree = "<group>";
@@ -485,6 +499,8 @@
 			files = (
 				A0444E082EE1CC4900E7155E /* ViewController.swift in Sources */,
 				A0444DD62EE1CC4900E7155E /* AppDelegate.swift in Sources */,
+				A00D1D122F2B92D8002B5B4B /* Config.swift in Sources */,
+				A00D1D132F2B92D8002B5B4B /* Config.m in Sources */,
 				A0444DD82EE1CC4900E7155E /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -493,6 +509,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A00D1D142F2B92D8002B5B4B /* Config.swift in Sources */,
+				A00D1D152F2B92D8002B5B4B /* Config.m in Sources */,
 				A0444E092EE1CC4900E7155E /* ViewController.swift in Sources */,
 				A0444DE72EE1CC4900E7155E /* AppDelegate.swift in Sources */,
 			);
@@ -785,6 +803,8 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Shared (App)/Web Wallet Selector (iOS)-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -826,6 +846,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Shared (App)/Web Wallet Selector (iOS)-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -988,6 +1009,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Shared (App)/Web Wallet Selector (macOS)-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 			};
