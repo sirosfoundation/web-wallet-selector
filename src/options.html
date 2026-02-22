@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Digital Wallet Configuration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -12,38 +13,42 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       background: #f9fafb;
       color: #000000;
-      line-height: 1.5;
+      line-height: 1.2;
     }
 
     .header {
       background: #ffffff;
       color: #111827;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 16px 24px;
       display: flex;
       align-items: center;
       gap: 16px;
       border-bottom: 1px solid #e5e7eb;
     }
 
-    .header .logo {
-      width: 48px;
-      height: 48px;
+    .header .logo-placeholder {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      min-height: 32px;
+      background: #B1B2B5;
+      border-radius: 8px;
     }
 
     .header-text h1 {
       font-size: 24px;
       font-weight: 600;
       color: #1C4587;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .header-text p {
       font-size: 14px;
-      color: #6b7280;
+      color: #000000;
+      font-weight: 400;
     }
 
     .container {
@@ -65,31 +70,42 @@
 
     .tabs {
       display: flex;
-      gap: 8px;
-      border-bottom: 2px solid #e5e7eb;
+      gap: 32px;
+      border-bottom: 1px solid #e5e7eb;
       margin-bottom: 32px;
+      position: relative;
     }
 
     .tab {
-      padding: 12px 24px;
+      padding: 12px 0;
       background: none;
       border: none;
-      border-bottom: 2px solid transparent;
-      font-size: 15px;
-      font-weight: 500;
-      color: #6b7280;
+      font-size: 16px;
+      font-weight: 400;
+      color: #000000;
       cursor: pointer;
       transition: all 0.2s;
-      margin-bottom: -2px;
+      position: relative;
     }
 
     .tab:hover {
-      color: #374151;
+      color: #1C4587;
     }
 
     .tab.active {
       color: #1C4587;
-      border-bottom-color: #1C4587;
+      font-weight: 600;
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #1C4587;
+      border-radius: 8px 8px 0 0;
     }
 
     .tab-content {
@@ -155,10 +171,10 @@
 
     .section {
       background: white;
-      border-radius: 12px;
+      border-radius: 8px;
       padding: 24px;
       margin-bottom: 24px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e5e7eb;
     }
 
     .section-header {
@@ -171,27 +187,28 @@
     .section-title {
       font-size: 18px;
       font-weight: 600;
-      color: #111827;
+      color: #000000;
     }
 
     .page-title {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 600;
-      color: #111827;
+      color: #000000;
       margin-bottom: 8px;
     }
 
     .page-description {
       font-size: 14px;
-      color: #6b7280;
+      color: #000000;
+      font-weight: 400;
       margin-bottom: 24px;
     }
 
     .btn {
-      padding: 10px 20px;
+      padding: 8px 16px;
       background: #1C4587;
       color: white;
-      border: none;
+      border: 1px solid #1C4587;
       border-radius: 8px;
       font-size: 14px;
       font-weight: 500;
@@ -199,12 +216,13 @@
       transition: all 0.2s;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
     }
 
     .btn:hover {
       background: #14366B;
-      transform: translateY(-1px);
+      border-color: #14366B;
     }
 
     .btn:active {
@@ -212,14 +230,14 @@
     }
 
     .btn-secondary {
-      background: white;
-      color: #374151;
-      border: 1px solid #d1d5db;
+      background: #f8f9f9;
+      color: #000000;
+      border: 1px solid #6e7582;
     }
 
     .btn-secondary:hover {
-      background: #f9fafb;
-      border-color: #9ca3af;
+      background: #e8e9ea;
+      border-color: #6e7582;
     }
 
     .btn-danger {
@@ -251,16 +269,16 @@
     }
 
     .wallet-card {
-      border: 2px solid #e5e7eb;
-      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
       padding: 20px;
       transition: all 0.2s;
       position: relative;
+      background: #ffffff;
     }
 
     .wallet-card:hover {
       border-color: #1C4587;
-      box-shadow: 0 4px 6px rgba(102, 126, 234, 0.1);
     }
 
     .wallet-card.disabled {
@@ -275,15 +293,27 @@
       margin-bottom: 12px;
     }
 
-    .wallet-icon {
-      font-size: 32px;
-      width: 56px;
-      height: 56px;
+    .wallet-icon-wrapper {
+      width: 48px;
+      height: 48px;
+      background: #e8e9ea;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 12px;
       flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .wallet-icon-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 4px;
+    }
+
+    .wallet-icon {
+      font-size: 24px;
     }
 
     .wallet-info {
@@ -292,15 +322,15 @@
     }
 
     .wallet-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: #111827;
+      font-size: 14px;
+      font-weight: 500;
+      color: #000000;
       margin-bottom: 4px;
     }
 
     .wallet-url {
       font-size: 12px;
-      color: #6b7280;
+      color: #6e7582;
       word-break: break-all;
     }
 
@@ -320,12 +350,12 @@
 
     .badge-success {
       background: #d1fae5;
-      color: #065f46;
+      color: #19712f;
     }
 
     .badge-warning {
-      background: #fef3c7;
-      color: #92400e;
+      background: #ffe2e3;
+      color: #bc221a;
     }
 
     .badge-info {
@@ -354,7 +384,7 @@
       gap: 8px;
     }
 
-    /* Toggle Switch */
+    /* Toggle Switch - matches Penpot design */
     .toggle-switch {
       position: relative;
       width: 44px;
@@ -375,7 +405,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: #d1d5db;
+      background-color: #b1b2b5;
       transition: 0.3s;
       border-radius: 24px;
     }
@@ -394,7 +424,7 @@
     }
 
     .toggle-switch input:checked + .toggle-slider {
-      background-color: #1C4587;
+      background-color: #19712f;
     }
 
     .toggle-switch input:checked + .toggle-slider:before {
@@ -470,14 +500,14 @@
     }
 
     .form-label {
-      font-size: 13px;
-      font-weight: 500;
-      color: #374151;
+      font-size: 14px;
+      font-weight: 400;
+      color: #000000;
     }
 
     .form-help {
       font-size: 12px;
-      color: #6b7280;
+      color: #6e7582;
     }
 
     .form-label.required::after {
@@ -490,11 +520,17 @@
     .form-select,
     .form-textarea {
       padding: 10px 14px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
+      border: 1px solid #000000;
+      border-radius: 7px;
       font-size: 14px;
       font-family: inherit;
       transition: all 0.2s;
+      background: #ffffff;
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: #bfc1c2;
     }
 
     .form-input:focus,
@@ -514,7 +550,7 @@
       max-width: 200px;
     }
 
-    /* Custom checkbox styling */
+    /* Custom checkbox styling - matches Penpot design */
     .checkbox-group {
       display: flex;
       align-items: center;
@@ -526,28 +562,108 @@
       height: 18px;
       cursor: pointer;
       accent-color: #1C4587;
+      border: 1.5px solid #1C4587;
+      border-radius: 3px;
     }
 
-    /* Preset cards */
+    .checkbox-group label {
+      font-size: 14px;
+      font-weight: 400;
+      color: #000000;
+    }
+
+    /* Preset cards - matches Penpot design */
     .preset-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
       margin-bottom: 24px;
     }
 
     .preset-card {
-      padding: 16px;
-      border: 2px solid #e5e7eb;
-      border-radius: 8px;
+      padding: 24px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
       transition: all 0.2s;
       display: flex;
+      flex-direction: column;
       align-items: center;
       gap: 12px;
+      background: #ffffff;
+      text-align: center;
     }
 
     .preset-card:hover {
       border-color: #1C4587;
+    }
+
+    .preset-card.added {
+      border-color: #19712f;
+      background: #f0fdf4;
+    }
+
+    .preset-icon {
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 51.39px;
+      overflow: hidden;
+    }
+
+    .preset-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .preset-info {
+      flex: 1;
+    }
+
+    .preset-name {
+      font-size: 18px;
+      font-weight: 500;
+      color: #000000;
+      margin-bottom: 4px;
+    }
+
+    .preset-status {
+      font-size: 14px;
+      color: #6e7582;
+    }
+
+    .preset-status.added {
+      color: #19712f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+
+    .preset-btn {
+      padding: 8px 16px;
+      background: #1C4587;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-width: 60px;
+    }
+
+    .preset-btn:hover {
+      background: #14366B;
+    }
+
+    .preset-btn:disabled {
+      background: #d1d5db;
+      cursor: not-allowed;
+    }
       background: #f0f9ff;
     }
 
@@ -612,31 +728,54 @@
       cursor: not-allowed;
     }
 
-    /* Icon selector */
+    /* Icon selector - matches Penpot design */
     .icon-selector {
       display: flex;
-      align-items: center;
-      gap: 12px;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .icon-selector-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
     }
 
     .icon-preview {
-      width: 56px;
-      height: 56px;
-      border: 2px solid #e5e7eb;
-      border-radius: 12px;
+      width: 64px;
+      height: 64px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-size: 32px;
       background: white;
       position: relative;
       overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .icon-preview.loading::after {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border: 2px solid #e5e7eb;
+      border-top-color: #1C4587;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     .icon-preview img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      padding: 8px;
     }
 
     .icon-preview .placeholder {
@@ -646,23 +785,91 @@
     .icon-options {
       display: flex;
       flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .icon-options-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #6e7582;
+      margin-bottom: 4px;
+    }
+
+    .icon-options-row {
+      display: flex;
       gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .icon-option-btn {
+      width: 48px;
+      height: 48px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      padding: 4px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .icon-option-btn:hover {
+      border-color: #1C4587;
+    }
+
+    .icon-option-btn.selected {
+      border-color: #1C4587;
+      background: #f0f9ff;
+    }
+
+    .icon-option-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .icon-option-btn.emoji {
+      font-size: 24px;
+    }
+
+    .icon-option-btn.favicon img {
+      padding: 4px;
+    }
+
+    .favicon-status {
+      font-size: 11px;
+      color: #6e7582;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .favicon-status.success {
+      color: #19712f;
+    }
+
+    .favicon-status.error {
+      color: #bc221a;
     }
 
     .icon-emoji-grid {
       display: flex;
-      gap: 4px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .icon-emoji-btn {
-      width: 32px;
-      height: 32px;
-      border: 1px solid #e5e7eb;
-      border-radius: 6px;
+      width: 30px;
+      height: 30px;
+      border: 1px solid #000000;
+      border-radius: 2px;
       background: white;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 14px;
       transition: all 0.2s;
     }
 
@@ -678,7 +885,7 @@
 
     .icon-upload-btn {
       font-size: 12px;
-      color: #6b7280;
+      color: #6e7582;
       background: none;
       border: none;
       cursor: pointer;
@@ -708,12 +915,12 @@
 
     .modal-content {
       background: white;
-      border-radius: 12px;
+      border-radius: 8px;
       max-width: 600px;
       width: 90%;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e5e7eb;
     }
 
     .modal-header {
@@ -722,9 +929,9 @@
     }
 
     .modal-title {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
-      color: #111827;
+      color: #000000;
     }
 
     .modal-body {
@@ -816,8 +1023,8 @@
 
     .setting-label {
       font-size: 14px;
-      font-weight: 500;
-      color: #111827;
+      font-weight: 400;
+      color: #000000;
       margin-bottom: 4px;
       display: flex;
       align-items: center;
@@ -825,8 +1032,8 @@
     }
 
     .setting-description {
-      font-size: 13px;
-      color: #6b7280;
+      font-size: 12px;
+      color: #6e7582;
     }
 
     /* Info tooltip */
@@ -917,7 +1124,7 @@
   <div class="toast-container" id="toast-container"></div>
 
   <div class="header">
-    <img src="icons/logo-dark.svg" alt="Siros" class="logo">
+    <div class="logo-placeholder"></div>
     <div class="header-text">
       <h1>Digital Wallet Configuration</h1>
       <p>Manage your digital identity wallets and credential providers</p>
@@ -1017,25 +1224,46 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="wallet-icon">Icon</label>
-            <span class="form-help">Choose an icon to represent this wallet</span>
+            <label class="form-label" for="wallet-icon">Wallet Icon</label>
+            <span class="form-help">We'll try to fetch the logo from the wallet URL. You can also choose a generated icon.</span>
             <div class="icon-selector">
-              <div class="icon-preview" id="icon-preview">
-                <span class="placeholder">🔐</span>
-              </div>
-              <div class="icon-options">
-                <div class="icon-emoji-grid" id="icon-emoji-grid">
-                  <button type="button" class="icon-emoji-btn selected" data-emoji="🔐">🔐</button>
-                  <button type="button" class="icon-emoji-btn" data-emoji="🌐">🌐</button>
-                  <button type="button" class="icon-emoji-btn" data-emoji="🇪🇺">🇪🇺</button>
-                  <button type="button" class="icon-emoji-btn" data-emoji="🧪">🧪</button>
-                  <button type="button" class="icon-emoji-btn" data-emoji="💼">💼</button>
-                  <button type="button" class="icon-emoji-btn" data-emoji="🏦">🏦</button>
-                  <button type="button" class="icon-emoji-btn" data-emoji="🎓">🎓</button>
-                  <button type="button" class="icon-emoji-btn" data-emoji="🏥">🏥</button>
+              <div class="icon-selector-row">
+                <div class="icon-preview" id="icon-preview">
+                  <span class="placeholder">?</span>
                 </div>
-                <input type="hidden" id="wallet-icon" value="🔐">
+                <div class="icon-options">
+                  <div id="favicon-section" style="display: none;">
+                    <div class="icon-options-label">From wallet URL</div>
+                    <div class="icon-options-row">
+                      <button type="button" class="icon-option-btn favicon" id="favicon-option" data-type="favicon">
+                        <img id="favicon-img" src="" alt="Favicon">
+                      </button>
+                    </div>
+                    <div class="favicon-status" id="favicon-status"></div>
+                  </div>
+                  <div id="generated-section">
+                    <div class="icon-options-label">Generated icons</div>
+                    <div class="icon-options-row" id="generated-icons">
+                      <!-- Generated icons will be inserted here -->
+                    </div>
+                  </div>
+                  <div>
+                    <div class="icon-options-label">Or choose an emoji</div>
+                    <div class="icon-emoji-grid" id="icon-emoji-grid">
+                      <button type="button" class="icon-emoji-btn emoji" data-emoji="🔐">🔐</button>
+                      <button type="button" class="icon-emoji-btn emoji" data-emoji="🌐">🌐</button>
+                      <button type="button" class="icon-emoji-btn emoji" data-emoji="🇪🇺">🇪🇺</button>
+                      <button type="button" class="icon-emoji-btn emoji" data-emoji="🧪">🧪</button>
+                      <button type="button" class="icon-emoji-btn emoji" data-emoji="💼">💼</button>
+                      <button type="button" class="icon-emoji-btn emoji" data-emoji="🏦">🏦</button>
+                      <button type="button" class="icon-emoji-btn emoji" data-emoji="🎓">🎓</button>
+                      <button type="button" class="icon-emoji-btn emoji" data-emoji="🏥">🏥</button>
+                    </div>
+                  </div>
+                </div>
               </div>
+              <input type="hidden" id="wallet-icon" value="">
+              <input type="hidden" id="wallet-icon-type" value="">
             </div>
           </div>
 
@@ -1205,6 +1433,7 @@
     </div>
   </div>
 
+  <script src="icon-utils.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

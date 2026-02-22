@@ -3,7 +3,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-  const statusDiv = document.getElementById('status');
+  const statusIndicator = document.getElementById('statusIndicator');
   const statusText = document.getElementById('statusText');
   const extensionToggle = document.getElementById('extensionToggle');
   const clearBtn = document.getElementById('clearBtn');
@@ -67,10 +67,12 @@ document.addEventListener('DOMContentLoaded', function() {
     extensionToggle.checked = enabled;
     
     if (enabled) {
-      statusDiv.className = 'status active';
+      statusIndicator.classList.remove('inactive');
+      statusText.classList.remove('inactive');
       statusText.textContent = 'Active & monitoring';
     } else {
-      statusDiv.className = 'status inactive';
+      statusIndicator.classList.add('inactive');
+      statusText.classList.add('inactive');
       statusText.textContent = 'Disabled';
     }
 
@@ -99,15 +101,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     walletList.innerHTML = wallets.map(wallet => {
       const uses = stats?.walletUses?.[wallet.id] || 0;
-      const statusBadge = wallet.enabled 
-        ? `<span class="wallet-status">Active</span>`
-        : `<span class="wallet-status disabled">Disabled</span>`;
+      const statusClass = wallet.enabled ? 'active' : 'disabled';
+      const statusLabel = wallet.enabled ? 'Active' : 'Disabled';
       
       return `
         <div class="wallet-item">
-          <span class="wallet-icon">${wallet.icon || '🔐'}</span>
+          <div class="wallet-icon-wrapper">${wallet.icon || '🔐'}</div>
           <span class="wallet-name">${escapeHtml(wallet.name)}</span>
-          ${statusBadge}
+          <span class="wallet-status ${statusClass}">${statusLabel}</span>
         </div>
       `;
     }).join('');
