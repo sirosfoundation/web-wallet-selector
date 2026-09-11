@@ -111,7 +111,7 @@ describe('DCGateway', () => {
 		it('should navigate a pre-opened popup instead of calling window.open', async () => {
 			const popup = { closed: false, location: { href: '' }, close: vi.fn() } as unknown as Window;
 
-			gateway.invoke(wallet, OpenID4VPProtocols.NORMAL, request, 'req-123', popup);
+			gateway.invoke(wallet, OpenID4VPProtocols.LEGACY, request, 'req-123', popup);
 
 			expect(window.open).not.toHaveBeenCalled();
 			expect(popup.location.href).toContain('wallet.example.com');
