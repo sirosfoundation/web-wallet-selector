@@ -44,7 +44,7 @@ describe('DCGateway', () => {
 		it('should prepare valid requests', () => {
 			const requests = [
 				{
-					protocol: OpenID4VPProtocols.NORMAL,
+					protocol: OpenID4VPProtocols.LEGACY,
 					data: { dcql_query: { credentials: [{ id: 'cred-1', format: 'dc+sd-jwt', meta: { vct_values: ['TestCredential'] } }] } },
 				},
 			];
@@ -52,15 +52,15 @@ describe('DCGateway', () => {
 			const result = gateway.prepareRequests(requests);
 
 			expect(result).toHaveLength(1);
-			expect(result[0].protocol).toBe(OpenID4VPProtocols.NORMAL);
+			expect(result[0].protocol).toBe(OpenID4VPProtocols.LEGACY);
 			expect(result[0].timestamp).toBeDefined();
 		});
 
 		it('should silently drop invalid requests', () => {
 			const requests = [
-				{ protocol: OpenID4VPProtocols.NORMAL, data: { dcql_query: { credentials: [{ id: 'cred-1', format: 'dc+sd-jwt', meta: { vct_values: ['TestCredential'] } }] } } },
-				{ protocol: OpenID4VPProtocols.NORMAL, data: 'invalid' },
-				{ protocol: OpenID4VPProtocols.NORMAL, data: { nonce: 'missing-query' } },
+				{ protocol: OpenID4VPProtocols.LEGACY, data: { dcql_query: { credentials: [{ id: 'cred-1', format: 'dc+sd-jwt', meta: { vct_values: ['TestCredential'] } }] } } },
+				{ protocol: OpenID4VPProtocols.LEGACY, data: 'invalid' },
+				{ protocol: OpenID4VPProtocols.LEGACY, data: { nonce: 'missing-query' } },
 			];
 
 			const result = gateway.prepareRequests(requests);
@@ -70,7 +70,7 @@ describe('DCGateway', () => {
 
 		it('should return empty array when all requests fail', () => {
 			const requests = [
-				{ protocol: OpenID4VPProtocols.NORMAL, data: null },
+				{ protocol: OpenID4VPProtocols.LEGACY, data: null },
 			];
 
 			const result = gateway.prepareRequests(requests);
@@ -82,7 +82,7 @@ describe('DCGateway', () => {
 	describe('invoke', () => {
 		const wallet = { id: '1', name: 'Test Wallet', url: 'https://wallet.example.com' };
 		const request = {
-			protocol: OpenID4VPProtocols.NORMAL,
+			protocol: OpenID4VPProtocols.LEGACY,
 			timestamp: new Date().toISOString(),
 			dcql_query: { credentials: [] },
 		};
@@ -92,7 +92,7 @@ describe('DCGateway', () => {
 			vi.mocked(window.open).mockReturnValue(mockWindow);
 
 			// Don't await - just start the invocation
-			gateway.invoke(wallet, OpenID4VPProtocols.NORMAL, request, 'req-123');
+			gateway.invoke(wallet, OpenID4VPProtocols.LEGACY, request, 'req-123');
 
 			expect(window.open).toHaveBeenCalledWith(
 				expect.stringContaining('wallet.example.com'),
@@ -104,14 +104,14 @@ describe('DCGateway', () => {
 			vi.mocked(window.open).mockReturnValue(null);
 
 			await expect(
-				gateway.invoke(wallet, OpenID4VPProtocols.NORMAL, request, 'req-123')
+				gateway.invoke(wallet, OpenID4VPProtocols.LEGACY, request, 'req-123')
 			).rejects.toThrow('Popup blocked');
 		});
 
 		it('should navigate a pre-opened popup instead of calling window.open', async () => {
 			const popup = { closed: false, location: { href: '' }, close: vi.fn() } as unknown as Window;
 
-			gateway.invoke(wallet, OpenID4VPProtocols.NORMAL, request, 'req-123', popup);
+			gateway.invoke(wallet, OpenID4VPProtocols.LEGACY, request, 'req-123', popup);
 
 			expect(window.open).not.toHaveBeenCalled();
 			expect(popup.location.href).toContain('wallet.example.com');
@@ -122,7 +122,7 @@ describe('DCGateway', () => {
 			const mockWindow = { closed: false } as Window;
 			vi.mocked(window.open).mockReturnValue(mockWindow);
 
-			const promise = gateway.invoke(wallet, OpenID4VPProtocols.NORMAL, request, 'req-123');
+			const promise = gateway.invoke(wallet, OpenID4VPProtocols.LEGACY, request, 'req-123');
 
 			vi.advanceTimersByTime(300000); // 5 minutes
 
@@ -133,7 +133,7 @@ describe('DCGateway', () => {
 			const mockWindow = { closed: false } as Window;
 			vi.mocked(window.open).mockReturnValue(mockWindow);
 
-			const promise = gateway.invoke(wallet, OpenID4VPProtocols.NORMAL, request, 'req-123');
+			const promise = gateway.invoke(wallet, OpenID4VPProtocols.LEGACY, request, 'req-123');
 
 			// Simulate wallet response
 			messageHandler({
@@ -155,7 +155,7 @@ describe('DCGateway', () => {
 			const mockWindow = { closed: false } as Window;
 			vi.mocked(window.open).mockReturnValue(mockWindow);
 
-			const promise = gateway.invoke(wallet, OpenID4VPProtocols.NORMAL, request, 'req-123');
+			const promise = gateway.invoke(wallet, OpenID4VPProtocols.LEGACY, request, 'req-123');
 
 			// Response from wrong origin
 			messageHandler({
@@ -178,7 +178,7 @@ describe('DCGateway', () => {
 			const otherWindow = { closed: false } as Window;
 			vi.mocked(window.open).mockReturnValue(mockWindow);
 
-			const promise = gateway.invoke(wallet, OpenID4VPProtocols.NORMAL, request, 'req-123');
+			const promise = gateway.invoke(wallet, OpenID4VPProtocols.LEGACY, request, 'req-123');
 
 			// Response from different window
 			messageHandler({
@@ -200,7 +200,7 @@ describe('DCGateway', () => {
 			const mockWindow = { closed: false } as Window;
 			vi.mocked(window.open).mockReturnValue(mockWindow);
 
-			const promise = gateway.invoke(wallet, OpenID4VPProtocols.NORMAL, request, 'req-123');
+			const promise = gateway.invoke(wallet, OpenID4VPProtocols.LEGACY, request, 'req-123');
 
 			messageHandler({
 				origin: 'https://wallet.example.com',
@@ -221,7 +221,7 @@ describe('DCGateway', () => {
 			const mockWindow = { closed: false } as Window;
 			vi.mocked(window.open).mockReturnValue(mockWindow);
 
-			const promise = gateway.invoke(wallet, OpenID4VPProtocols.NORMAL, request, 'req-123');
+			const promise = gateway.invoke(wallet, OpenID4VPProtocols.LEGACY, request, 'req-123');
 
 			// Random message
 			messageHandler({
