@@ -5,9 +5,9 @@
  */
 
 import {
-	OID4VP_PROTOCOLS,
-	OID4VP_ALL_PROTOCOLS,
 	isOID4VPProtocol,
+	OID4VP_ALL_PROTOCOLS,
+	OID4VP_PROTOCOLS,
 	type OID4VPProtocol,
 } from '@sirosfoundation/dc-api';
 
