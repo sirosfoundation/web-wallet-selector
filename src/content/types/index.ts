@@ -1,14 +1,4 @@
 import type { WalletRegistrationInput } from '@shared/schemas/resources';
-import type { WalletCompanionInterface } from './public-api/WalletCompanionInterface';
-
-export * from './public-api/WalletCompanionInterface';
-
-declare global {
-	interface Window {
-		showWalletSelector: ShowWalletSelectorFunction;
-		WalletCompanion: WalletCompanionInterface;
-	}
-}
 
 /**
  * For the stored wallet format, see `Wallet` in `@shared/schemas/resources`.
@@ -24,7 +14,7 @@ export type WalletOption = {
 
 export type ShowWalletSelectorOptions = {
 	wallets: WalletOption[];
-	onSelect: (wallet: WalletOption) => void;
+	onSelect: (wallet: WalletOption, popup: Window) => void;
 	onNative: () => void;
 	onCancel: () => void;
 };
